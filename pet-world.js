@@ -92,7 +92,7 @@ function bind(){
  by('pet-back').onclick=goBack;
  root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;notice='';render()});
  const controls={feed:'🥕 Mmm, lekker gegeten!',play:'🎾 Wat een leuk spelletje!',wash:'🫧 Helemaal proper!',rest:'💤 Lekker uitgerust!'};
- Object.entries(controls).forEach(([action,message])=>{let b=by('pet-'+action);if(b)b.onclick=()=>{core.care(action);notice=message;render()}});
+ Object.entries(controls).forEach(([action,message])=>{let b=by('pet-'+action);if(b)b.onclick=()=>{core.care(action==='feed'?'food':action);notice=message;render()}});
  const rename=by('pet-rename');
  if(rename)rename.onclick=()=>{const r=core.rename(by('pet-name').value);notice=r.ok?'🌈 Mooie naam!':'Vul eerst een naam in.';render()};
  root.querySelectorAll('[data-animal]').forEach(b=>b.onclick=()=>{core.choosePet(b.dataset.animal);notice='💞 Wat een lief vriendje!';render()});
