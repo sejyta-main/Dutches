@@ -1,4 +1,4 @@
-const CACHE='rekenreis-v5-pet-android';
+const CACHE='rekenreis-v6-pet-android';
 const APP=['./','./index.html','./style.css','./app.js','./adventures.css','./dictee.js','./memory-game.js','./activities.js','./rewards.js','./rewards.css','./pet-world.css','./pet-core.js','./pet-world.js','./pet-entry.js','./install-mobile.js','./pet-home-install.css','./manifest.webmanifest','./icons/icon.svg','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP)));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('rekenreis-')&&k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
