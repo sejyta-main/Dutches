@@ -4,7 +4,7 @@
  const root=document.getElementById('app');
  let promptEvent=null;
  const standalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
- window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;update()});
+ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;update();updateButtons()});
  window.addEventListener('appinstalled',()=>{promptEvent=null;update()});
  function help(){
   const isAndroid=/Android/i.test(navigator.userAgent),isIOS=/iPad|iPhone|iPod/i.test(navigator.userAgent);
