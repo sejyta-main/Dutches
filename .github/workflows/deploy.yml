@@ -39,6 +39,10 @@ jobs:
           node --check memory-game.js
           node --check activities.js
           node --check rewards.js
+          node --check pet-core.js
+          node --check pet-world.js
+          node --check pet-entry.js
+          node pet-core.test.cjs
           node rewards.test.cjs
       - name: Install image tools
         run: python -m pip install Pillow
@@ -47,7 +51,7 @@ jobs:
       - name: Collect static web app
         run: |
           mkdir -p _site/icons
-          cp index.html app.js dictee.js memory-game.js activities.js rewards.js style.css adventures.css rewards.css sw.js manifest.webmanifest _site/
+          cp index.html app.js dictee.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js style.css adventures.css rewards.css pet-world.css sw.js manifest.webmanifest _site/
           cp icons/icon.svg icons/icon-192.png icons/icon-512.png icons/apple-touch-icon.png _site/icons/
           touch _site/.nojekyll
       - name: Configure Pages
