@@ -56,8 +56,8 @@
  }
  function levels(xp){const thresholds=[0,100,240,420,650,950,1300,1740,2250,2850,3550,4350];let level=1;
   thresholds.forEach((t,i)=>{if(xp>=t)level=i+1});
-  if(xp>=thresholds[thresholds.length-1])level+=Math.floor((xp-thresholds[thresholds.length-1])/950);
-  const cur=thresholds[Math.min(level-1,thresholds.length-1)]||0;
+  if(xp>=thresholds[thresholds.length-1])level=thresholds.length+Math.floor((xp-thresholds[thresholds.length-1])/950);
+  const cur=level>=thresholds.length?thresholds[thresholds.length-1]+(level-thresholds.length)*950:thresholds[level-1];
   const next=level>=thresholds.length?cur+950:thresholds[level];
   return {level,cur,next,percent:cap(Math.round((xp-cur)/(next-cur)*100),0,100)};
  }
