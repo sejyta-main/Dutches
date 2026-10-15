@@ -30,6 +30,8 @@
   '<div class="result-actions"><button class="btn outline" id="install-return" type="button">🏠 Naar het startscherm</button></div>';
  }
  function update(){
+  const panels=root.querySelectorAll('.bottom-panels .panel');
+  panels.forEach(panel=>{const heading=panel.querySelector('h3');if(heading&&heading.textContent==='📲 Ook op je iPad!')heading.textContent='📲 Ook op iPad & Android!';});
   const old=root.querySelector('#back-install');
   if(!old||root.querySelector('#install-android-guide'))return;
   const card=old.closest('.dashboard')?.querySelector('article.question-card');
