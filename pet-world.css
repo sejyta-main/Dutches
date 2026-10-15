@@ -1,0 +1,93 @@
+/* Rekenreis Droomwereld — colorful iPad-first pet and adventure game */
+.pet-app{max-width:1100px}
+.pet-topbar{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;margin-bottom:17px}
+.pet-heading{font-size:clamp(19px,3vw,29px);font-weight:950;color:#423494;letter-spacing:-.6px;text-align:center}
+.pet-money{border:2px solid #f6cb75;background:#fff1bd;color:#865711;border-radius:17px;padding:12px 18px;box-shadow:0 4px 0 #edce93;font-size:20px;font-weight:950}
+.pet-level{display:grid;grid-template-columns:auto minmax(70px,1fr) auto;align-items:center;gap:10px;background:#fff;border:2px solid #ebe7fe;border-radius:20px;padding:13px 17px;margin-bottom:15px}
+.pet-level-badge{background:linear-gradient(110deg,#7355e3,#a886ef);border-radius:16px;padding:10px 14px;color:#fff;font-weight:950}
+.pet-level-track{height:17px;overflow:hidden;border-radius:20px;background:#e5e2f4;box-shadow:inset 0 2px 4px #7776bd24}
+.pet-level-track>div{height:100%;border-radius:20px;background:linear-gradient(90deg,#7bd4ac,#f8c64c)}
+.pet-level>span{font-weight:950;color:#5f50b9}
+.pet-level>small{color:#7d83a5;grid-column:2/4;text-align:right;font-size:12px}
+.pet-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0 19px}
+.pet-nav button{background:#fff;color:#6155a0;font-size:clamp(12px,2.2vw,17px);font-weight:950;padding:14px 7px;border-radius:18px;border:2px solid #e8e3fb;box-shadow:0 4px 0 #e2def8}
+.pet-nav button.selected{background:#7560e9;color:#fff;border-color:#6551d2;box-shadow:0 4px 0 #5140b2}
+.pet-toast{background:#e5f9ed;border:2px solid #abd8b5;border-radius:16px;text-align:center;padding:13px;color:#25714c;font-weight:950;margin-bottom:12px}
+.pet-layout{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(290px,.78fr);gap:17px;align-items:start}
+.pet-big-card,.pet-card,.pet-map{background:#fff;border:2px solid #e6e4fb;box-shadow:0 12px 28px #39419d10;border-radius:27px;padding:18px;min-width:0;margin-bottom:16px}
+.pet-card h3{font-size:20px;margin:4px 0 9px;color:#494298}
+.pet-card h2,.pet-map h2{font-size:26px;margin:4px 0 12px;color:#493f97}
+.pet-card p,.pet-map>p{color:#6f7697;line-height:1.5;font-size:14px}
+.pet-card-head{display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:950;color:#564bb0}
+.pet-label{display:block;margin:15px 0 8px;font-size:13px;font-weight:900;color:#727994}
+.pet-rename-row{display:flex;align-items:center;gap:7px}
+.pet-rename-row input{min-width:0;flex:1;border:2px solid #d9d3f6;border-radius:13px;padding:12px;font-size:17px;color:#433882}
+.pet-rename-row button{flex-shrink:0}
+.pet-animals{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.pet-animal{background:#f8f5ff;border:2px solid #e7dfff;border-radius:13px;padding:8px 2px;font-size:33px}
+.pet-animal small{display:block;font-size:10px;color:#60668d;font-weight:900}
+.pet-animal.chosen{background:#fff0be;border-color:#e8bd63;box-shadow:0 3px 0 #eac476}
+.pet-promo{display:flex;align-items:center;gap:14px;background:#fff7dd;border-radius:16px;padding:12px;margin:15px 0;font-size:14px;color:#775a30}
+.pet-promo>span{font-size:30px}
+.pet-note{font-size:12px!important;color:#7e85a0!important}
+.pet-scene{height:clamp(310px,40vw,455px);border-radius:23px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#dff1ff 0%,#f2d2ed 74%,#ecd4b7 75%,#efdcbf 100%);border:2px solid #e9dcef;isolation:isolate}
+.pet-scene.pet-room-room-pink{background:linear-gradient(180deg,#ffdced,#f5b8dc 74%,#f9e0cf 75%,#e6b6b1)}
+.pet-scene.pet-room-room-blue{background:linear-gradient(180deg,#a8e7ff,#d7effe 74%,#e0e0bc 75%,#c1be98)}
+.pet-scene.pet-room-room-space{background:linear-gradient(180deg,#2e275f,#654da8 74%,#473e78 75%,#66579c)}
+.pet-room-ceiling{position:absolute;top:14px;left:20px;right:20px;text-align:center;color:#f6c355;font-size:31px;letter-spacing:13px;opacity:.78}
+.pet-house-window{position:absolute;right:12%;top:15%;width:95px;height:118px;border:7px solid #fff6e8;background:linear-gradient(125deg,#a6e4ff,#d2fdf5);border-radius:50% 50% 12px 12px;box-shadow:0 7px 0 #bf8da4;display:grid;place-items:center;font-size:42px}
+.pet-house-window:after{content:"";position:absolute;top:47%;left:0;right:0;border-top:5px solid #fff6e8}
+.pet-room-room-space .pet-house-window{background:#403a87;color:white}
+.pet-home-label{position:absolute;top:17px;left:17px;background:#ffffffdc;border-radius:14px;padding:9px 12px;color:#6145aa;font-weight:950;font-size:clamp(11px,1.9vw,15px);max-width:59%}
+.pet-character{position:relative;z-index:2;margin-top:38px;width:225px;height:255px;display:grid;place-items:center;filter:drop-shadow(0 12px 8px #4228872b)}
+.pet-face{font-size:clamp(130px,21vw,200px);line-height:1;animation:pet-bob 3s ease-in-out infinite}
+.pet-hat,.pet-clothes{position:absolute;left:50%;transform:translateX(-50%);text-shadow:0 3px 4px #ffffffbb;line-height:1;z-index:3;pointer-events:none}
+.pet-hat{top:6px;font-size:clamp(48px,7vw,73px)}
+.pet-clothes{bottom:4px;font-size:clamp(63px,9vw,83px)}
+.pet-floor{position:absolute;bottom:0;left:0;right:0;height:24%;background:repeating-linear-gradient(90deg,#c4946322 0 24px,#eacda122 24px 27px)}
+.pet-furnishing{position:absolute;display:flex;justify-content:center;align-items:end;gap:16px;bottom:8px;left:6px;right:6px;z-index:3;pointer-events:none;min-height:68px}
+.pet-furniture{font-size:clamp(32px,5vw,53px);filter:drop-shadow(0 4px 2px #3c27893b)}
+.pet-stats{display:grid;gap:13px;margin:20px 4px}
+.pet-stat-head{display:flex;justify-content:space-between;gap:15px;font-size:13px;font-weight:850;color:#5c6489;margin-bottom:5px}
+.pet-stat-track{height:11px;background:#eeeef8;border-radius:20px;overflow:hidden}
+.pet-stat-track>div{height:100%;border-radius:20px}
+.pet-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.pet-actions .btn{min-height:52px;padding:11px 9px;font-size:14px}
+.pet-care-note{text-align:center;color:#8289aa;font-size:12px;margin-bottom:3px}
+.pet-filters{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 15px;scroll-snap-type:x proximity}
+.pet-filter{white-space:nowrap;background:#f1efff;color:#6154a5;padding:10px 15px;border:2px solid #e5e1fb;border-radius:17px;font-weight:900;scroll-snap-align:start}
+.pet-filter.active{background:#7762ea;color:white;border-color:#6654d1}
+.pet-shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(157px,1fr));gap:13px}
+.pet-shop-item{border:2px solid #e8e5fa;background:linear-gradient(145deg,#fff,#fbf9ff);border-radius:19px;padding:13px;text-align:center;display:flex;align-items:center;flex-direction:column;min-height:198px}
+.pet-shop-item.pet-locked{background:#f6f5f8}
+.pet-item-emoji{font-size:59px;line-height:1.3;margin:6px}
+.pet-shop-item strong{color:#5644ad;font-size:16px;flex:1}
+.pet-item-level{font-size:11px;color:#8790ad;margin:6px 0 12px}
+.pet-shop-item .btn{width:100%;font-size:12px;min-height:39px}
+.pet-inventory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pet-owned{display:grid;align-items:center;grid-template-columns:48px 1fr;gap:8px;text-align:left;background:#f7f5fe;border:2px solid #e1dafa;border-radius:17px;padding:10px;color:#61559a}
+.pet-owned>span{font-size:37px;grid-row:span 2}
+.pet-owned strong{font-size:13px}.pet-owned small{font-size:11px}
+.pet-owned.wearing{background:#eafce7;border-color:#92d7a7}
+.pet-empty{padding:25px;color:#7583a0;text-align:center}
+.pet-world-count{display:inline-block;background:#fff0bd;color:#7d5a20;padding:10px 18px;border-radius:18px;font-weight:950;margin:10px 0 18px}
+.pet-map-path{max-width:850px;margin:10px auto}
+.pet-map-stage{display:flex;align-items:center;gap:18px;border:3px solid #dfdaf4;background:linear-gradient(105deg,#e6f2ff,#f7edff);border-radius:24px;padding:17px 21px;min-height:135px}
+.pet-map-stage:nth-of-type(4n+1){background:linear-gradient(110deg,#e4f9e4,#f9f7df)}
+.pet-map-stage.locked{filter:grayscale(.7);opacity:.66}
+.pet-map-stop{font-size:clamp(42px,7vw,74px)}
+.pet-map-details{min-width:0;flex:1}
+.pet-map-chapter{font-size:10px;letter-spacing:2px;font-weight:900;color:#8982b4}
+.pet-map-details h3{margin:3px 0 7px;font-size:clamp(17px,2.8vw,23px);color:#4d43a3}
+.pet-map-details p{margin:0 0 8px;font-size:13px;color:#727d9f}
+.pet-map-tag{background:#ffffffd9;color:#514398;border-radius:15px;padding:5px 11px;font-size:12px;font-weight:850}
+.pet-map-connector{text-align:center;color:#ab8dde;font-weight:900;font-size:26px;line-height:1.5}
+.pet-endgame{text-align:center;background:linear-gradient(120deg,#fff3c8,#e5f8ff);border:3px dashed #e8cc78;border-radius:24px;padding:19px;margin:20px auto;max-width:780px}
+.pet-endgame strong{font-size:22px;color:#6d5295}
+.pet-endgame p{color:#767d9e}
+.pet-endgame span{color:#77639a;font-weight:900}
+.pet-privacy{text-align:center;color:#969eb9;font-size:12px;margin:24px auto 0;max-width:700px;line-height:1.5}
+@keyframes pet-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@media(max-width:785px){.pet-layout{grid-template-columns:1fr}.pet-side{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.pet-side .pet-card{margin:0}.pet-side .pet-card:first-child{grid-column:span 2}.pet-scene{height:390px}}
+@media(max-width:570px){.pet-topbar{gap:8px}.pet-topbar .back{padding:9px;font-size:12px}.pet-heading{font-size:20px;order:3;flex-basis:100%}.pet-money{padding:8px 12px;font-size:17px}.pet-level{grid-template-columns:100px 1fr auto;gap:6px;padding:10px}.pet-level-badge{padding:8px 5px;font-size:12px}.pet-level>small{font-size:10px}.pet-nav{gap:5px}.pet-nav button{font-size:11px;padding:11px 3px}.pet-scene{height:320px}.pet-character{transform:scale(.86)}.pet-room-ceiling{font-size:18px}.pet-house-window{width:65px;height:83px;border-width:5px}.pet-side{display:block}.pet-side .pet-card{margin-bottom:12px}.pet-map-stage{padding:12px;gap:9px;flex-wrap:wrap}.pet-map-stop{font-size:40px}.pet-map-stage .btn{width:100%}.pet-map-details h3{font-size:17px}.pet-shop-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.pet-shop-item{padding:9px;min-height:185px}.pet-shop-item strong{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.pet-face{animation:none}}
