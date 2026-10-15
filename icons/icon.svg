@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Rekenreis logo met vrolijk vosje">
+<defs>
+<linearGradient id="bg" x2="1" y2="1"><stop stop-color="#5aa8ff"/><stop offset=".55" stop-color="#7960ea"/><stop offset="1" stop-color="#ae68ee"/></linearGradient>
+<linearGradient id="fur" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffa64c"/><stop offset="1" stop-color="#ef713f"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="105" fill="url(#bg)"/>
+<circle cx="422" cy="86" r="58" fill="#fff" opacity=".13"/><circle cx="75" cy="433" r="66" fill="#fff" opacity=".09"/>
+<path d="M91 230 105 97 222 166 290 164 400 91 421 234" fill="#bc542d" stroke="#783962" stroke-width="12" stroke-linejoin="round"/>
+<path d="M120 192 129 133 197 174M323 173 388 130 399 192" fill="#ffced4"/>
+<ellipse cx="255" cy="272" rx="178" ry="155" fill="url(#fur)" stroke="#d45b42" stroke-width="8"/>
+<path d="M90 299Q141 285 170 320Q204 352 256 350Q308 352 342 320Q375 285 420 299Q400 408 257 425Q110 407 90 299" fill="#fff2d9"/>
+<ellipse cx="186" cy="271" rx="16" ry="24" fill="#243052"/><ellipse cx="326" cy="271" rx="16" ry="24" fill="#243052"/>
+<circle cx="192" cy="263" r="6" fill="white"/><circle cx="332" cy="263" r="6" fill="white"/>
+<ellipse cx="256" cy="332" rx="27" ry="20" fill="#59375b"/>
+<path d="M255 352q-28 31-58 2m58-2q28 31 58 2" fill="none" stroke="#59375b" stroke-width="9" stroke-linecap="round"/>
+<ellipse cx="137" cy="319" rx="27" ry="15" fill="#ffa1a0" opacity=".55"/><ellipse cx="377" cy="319" rx="27" ry="15" fill="#ffa1a0" opacity=".55"/>
+<circle cx="424" cy="434" r="69" fill="#ffcf55" stroke="#fff9cb" stroke-width="10"/>
+<text x="424" y="451" font-family="Arial, Helvetica, sans-serif" font-size="61" text-anchor="middle" font-weight="900" fill="#62458c">1K</text>
+<path d="M88 45 97 72 124 80 97 89 88 117 79 89 50 80 79 72z" fill="#ffe46f"/>
+</svg>
