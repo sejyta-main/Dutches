@@ -1,0 +1,52 @@
+const assert=require('node:assert/strict');
+const vm=require('node:vm');
+const fs=require('node:fs');
+const code=fs.readFileSync('pet-core.js','utf8');
+const memory=new Map();
+const localStorage={
+ getItem:k=>memory.get(k)||null,
+ setItem:(k,v)=>memory.set(k,String(v)),
+ removeItem:k=>memory.delete(k)
+};
+const window={};
+vm.runInNewContext(code,{window,localStorage,Math,JSON,Number,String,Array,Object,Set});
+const core=window.RekenPetCore;
+assert.ok(core,'Pet engine must exist');
+let a=core.snapshot();
+assert.equal(a.coins,60,'Welcome coin balance');
+assert.equal(a.level,1);
+assert.equal(a.chapters.filter(c=>c.unlocked).length,1,'World one is open initially');
+let item=core.catalog.find(c=>c.id==='hat-bow');
+assert.equal(core.buy(item.id).ok,true,'Purchase starter bow');
+a=core.snapshot();
+assert.equal(a.coins,25);
+assert.ok(a.pet.owned.includes(item.id));
+assert.equal(core.buy(item.id).ok,false,'Cannot buy item twice');
+assert.equal(core.equip(item.id).ok,true,'Can dress the pet');
+assert.equal(core.snapshot().pet.equip.hat,item.id);
+assert.equal(core.equip(item.id).ok,true,'Can unequip');
+assert.equal(core.snapshot().pet.equip.hat,null);
+const before=core.snapshot().pet.mood;
+assert.equal(core.care('play').ok,true);
+assert.ok(core.snapshot().pet.mood>before);
+assert.equal(core.rename('Kiki').ok,true);
+assert.equal(core.snapshot().pet.name,'Kiki');
+assert.equal(core.choosePet('cat').ok,true);
+assert.equal(core.snapshot().pet.pet,'cat');
+assert.equal(core.buy('room-space').ok,false,'High level items stay locked');
+const math={history:Array.from({length:55},(_,i)=>({topic:'blocks',correct:true})),sessions:[{mode:'practice',topic:'blocks',total:10,correct:10,date:'t1'},{mode:'practice',topic:'place',total:10,correct:10,date:'t2'}]};
+memory.set('rekenreis-progress-v1',JSON.stringify(math));
+a=core.snapshot();
+assert.equal(a.xp,660);
+assert.equal(a.coins,300);
+assert.equal(a.chapters.filter(c=>c.unlocked).length,5,'XP unlocks all five map regions');
+assert.equal(a.mastered.length,2,'Mastery needs distinct perfect worlds');
+math.sessions.push({mode:'practice',topic:'words',total:10,correct:10,date:'t3'},{mode:'practice',topic:'line',total:10,correct:10,date:'t4'});
+memory.set('rekenreis-progress-v1',JSON.stringify(math));
+assert.equal(core.snapshot().bonusUnlocked,true,'Four perfect worlds unlock the memory special');
+const oldMath=memory.get('rekenreis-progress-v1');
+assert.equal(core.buy('hat-crown').ok,true,'High level purchase');
+assert.equal(memory.get('rekenreis-progress-v1'),oldMath,'Do not overwrite math progress');
+const n=core.levels(7000);
+assert.ok(n.next>7000&&n.percent<=100,'Unbounded levels continue correctly');
+console.log('Pet core tests passed: purchases, wardrobe, care, persistence, XP levels, unlocked chapters, existing maths progress and four-world prize.');
