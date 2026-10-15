@@ -45,7 +45,7 @@
  }
  function updateButtons(){
   const btn=root.querySelector('#android-install');
-  if(btn){btn.disabled=!promptEvent||standalone();btn.textContent=standalone()?'✅ Al geïnstalleerd':promptEvent?'📲 Installeer de app':'📲 Via het Chrome-menu'}
+  if(btn){btn.disabled=!promptEvent||standalone();const label=standalone()?'✅ Al geïnstalleerd':promptEvent?'📲 Installeer de app':'📲 Via het Chrome-menu';if(btn.textContent!==label)btn.textContent=label}
  }
  const observer=new MutationObserver(()=>{update();updateButtons()});
  observer.observe(root,{childList:true});
