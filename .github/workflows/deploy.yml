@@ -36,6 +36,10 @@ jobs:
         run: |
           node --check app.js
           node --check dictee.js
+          node --check woordpakketten.js
+          node --check dictee-v2.js
+          node --check retro-game.js
+          node dictee-v2.test.cjs
           node --check memory-game.js
           node --check activities.js
           node --check rewards.js
@@ -52,7 +56,7 @@ jobs:
       - name: Collect static web app
         run: |
           mkdir -p _site/icons
-          cp index.html app.js dictee.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js install-mobile.js style.css adventures.css rewards.css pet-world.css pet-home-install.css sw.js manifest.webmanifest _site/
+          cp index.html app.js dictee.js woordpakketten.js dictee-v2.js retro-game.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js install-mobile.js style.css adventures.css rewards.css pet-world.css pet-home-install.css dictee-v2.css sw.js manifest.webmanifest _site/
           cp icons/icon.svg icons/icon-192.png icons/icon-512.png icons/apple-touch-icon.png _site/icons/
           touch _site/.nojekyll
       - name: Configure Pages
