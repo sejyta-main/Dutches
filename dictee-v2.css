@@ -1,0 +1,65 @@
+/* Dictee 1–8 and 8-bit original arcade reward, touch-first. */
+.dict2-packs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 22px}
+.dict2-pack{background:#fff;border:3px solid #e6e2fc;border-radius:19px;padding:17px 14px;color:#574d9a;text-align:left;display:flex;gap:7px;flex-direction:column;min-height:159px;box-shadow:0 6px 16px #3c318515}
+.dict2-pack.active{border-color:#8c66ef;background:#faf5ff;box-shadow:0 5px 0 #d7c6fe}
+.dict2-pack:hover{transform:translateY(-2px)}
+.dict2-pack-number{font-size:20px;font-weight:950;color:#5843ad}
+.dict2-pack strong{font-size:14px;flex:1}
+.dict2-pack small{font-size:11px;color:#8784a4}
+.dict2-progress{height:9px;border-radius:20px;overflow:hidden;background:#e7e7f3}
+.dict2-progress>span{display:block;height:100%;background:#61cb9b;border-radius:20px}
+.dict2-action-panel{padding:24px}
+.dict2-action-panel h2{font-size:clamp(21px,3vw,27px);color:#5741a5;margin:0 0 12px}
+.dict2-action-panel>p{line-height:1.55;color:#697496}
+.dict2-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:17px 0}
+.dict2-modes .btn{width:100%}
+.dict2-mega{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:15px;border:2px solid #eed798;background:#fff6d7;padding:19px;border-radius:18px;margin:20px 0}
+.dict2-mega strong{font-size:19px;color:#745123}
+.dict2-mega p{color:#826c43;font-size:14px;margin:6px 0 0}
+.dict2-arcade-offer{border:3px solid #f5d479;border-radius:22px;padding:18px;margin:20px 0;background:linear-gradient(115deg,#fff4c6,#edf8ef);text-align:center}
+.dict2-arcade-offer strong{color:#74509b;font-size:20px}
+.dict2-arcade-offer p{margin:12px 0;color:#736985}
+.dict2-question{min-height:0}
+.dict2-answer{min-height:0;max-width:820px}
+.dict2-answer .dict-definition{width:100%}
+.dict2-finish .dict-definition{width:100%}
+.dict2-study .question-card{min-height:0}
+.dict2-rule-summary{background:#f7f3ff;padding:16px;border:2px solid #e3dcff;border-radius:18px;margin-bottom:17px}
+.dict2-rule-summary h2{font-size:24px}
+.dict2-rule-summary p{line-height:1.5}
+.dict2-study-list{display:grid;gap:9px;margin:20px 0}
+.dict2-study-item{display:grid;grid-template-columns:53px minmax(0,1fr) 90px;align-items:center;gap:12px;border-radius:18px;padding:12px 15px;border:2px solid #e9e8f8;background:#fcfcff}
+.dict2-hear{font-size:26px;border-radius:15px;min-height:48px;background:#ebe5ff}
+.dict2-study-copy{display:flex;flex-direction:column;gap:5px;text-align:left}
+.dict2-study-copy strong{color:#4b3cab;font-size:19px}
+.dict2-study-copy small{color:#6676a2;font-size:13px}
+.dict2-study-copy span{font-size:13px;color:#707896;font-style:italic}
+.dict2-studied{display:flex;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:900;color:#5a50a3}
+.dict2-studied input{width:24px;height:24px;accent-color:#6b4ed7}
+.dict2-progress-words{padding:15px;text-align:center;color:#655498;font-weight:900;background:#f4f1ff;border-radius:15px}
+.dict2-report-line{display:flex;justify-content:space-between;align-items:center;gap:10px;border:2px solid #e9e3fa;border-radius:16px;background:#faf8ff;padding:15px;color:#5545a2;text-align:left}
+.dict2-report-line strong{font-size:15px}
+.dict2-report-line span{font-size:13px;color:#6f7998}
+.arcade-shell{max-width:710px;margin:auto;border-radius:27px;border:3px solid #9084e2;background:#24264f;box-shadow:0 12px 30px #23245044;padding:18px;color:white}
+.arcade-head{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.arcade-head .eyebrow{color:#a9e8ff}
+.arcade-head h1{font-family:ui-monospace,monospace;color:#ffe77b;font-weight:900;font-size:clamp(23px,4vw,34px);text-shadow:3px 3px #86569e;margin:5px 0}
+.arcade-head p{font-size:14px;line-height:1.4;color:#e8eafa}
+.arcade-logo{font-size:60px}
+.arcade-status{display:flex;justify-content:space-around;gap:10px;margin:16px auto;font-family:ui-monospace,monospace;font-weight:900;font-size:17px}
+.arcade-screen{position:relative;max-width:400px;margin:0 auto;background:#151836;border:7px solid #726ab5;border-radius:15px;overflow:hidden;box-shadow:inset 0 0 30px #050a25}
+#arcade-canvas{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:none}
+.arcade-message{position:absolute;inset:0;z-index:2;background:#19143ddb;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;color:white}
+.arcade-message[hidden]{display:none}
+.arcade-message h2{font-size:28px;font-family:ui-monospace,monospace;color:#ffe57a}
+.arcade-message p{font-size:14px;line-height:1.5}
+.arcade-victory{font-size:82px}
+.arcade-controls{max-width:440px;display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:17px;margin:21px auto 13px}
+.arcade-control{background:#f8d96c;color:#584498;border:4px solid #fff0b8;box-shadow:0 6px 0 #b58835;border-radius:24px;min-height:77px;font-size:26px;font-weight:950;touch-action:none;user-select:none;-webkit-user-select:none}
+.arcade-control:active{transform:translateY(4px);box-shadow:0 2px 0 #b58835}
+.arcade-control.arcade-fire{background:#9be9c7;border-color:#d4ffee;font-size:22px;box-shadow:0 6px 0 #3a9270}
+.arcade-instructions{font-size:13px;color:#c9cbef;text-align:center;line-height:1.5;margin-bottom:16px}
+.arcade-shell .btn.outline{background:#ebebff}
+@media(max-width:860px){.dict2-packs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.dict2-packs{gap:8px}.dict2-pack{padding:12px;min-height:156px}.dict2-pack-number{font-size:17px}.dict2-action-panel{padding:16px}.dict2-modes{gap:8px}.dict2-modes .btn{padding:12px 7px;font-size:13px}.dict2-study-item{grid-template-columns:43px minmax(0,1fr);gap:8px;padding:10px}.dict2-studied{grid-column:2;justify-content:flex-start}.dict2-study-copy strong{font-size:17px}.dict2-study-copy span{font-size:12px}.arcade-shell{padding:11px}.arcade-status{font-size:13px}.arcade-controls{gap:9px}.arcade-control{min-height:67px}.arcade-control.arcade-fire{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.dict2-pack:hover{transform:none}}
