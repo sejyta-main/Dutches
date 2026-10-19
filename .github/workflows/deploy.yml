@@ -34,7 +34,10 @@ jobs:
           node-version: '22'
       - name: Check JavaScript syntax
         run: |
+          node --check world-progress.js
           node --check app.js
+          node --check pet-play.js
+          node world-progress.test.cjs
           node --check dictee.js
           node --check woordpakketten.js
           node --check dictee-v2.js
@@ -56,7 +59,7 @@ jobs:
       - name: Collect static web app
         run: |
           mkdir -p _site/icons
-          cp index.html app.js dictee.js woordpakketten.js dictee-v2.js retro-game.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js install-mobile.js style.css adventures.css rewards.css pet-world.css pet-home-install.css dictee-v2.css sw.js manifest.webmanifest _site/
+          cp index.html world-progress.js app.js pet-play.js dictee.js woordpakketten.js dictee-v2.js retro-game.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js install-mobile.js style.css adventures.css rewards.css pet-world.css pet-home-install.css dictee-v2.css interactive-pet.css sw.js manifest.webmanifest _site/
           cp icons/icon.svg icons/icon-192.png icons/icon-512.png icons/apple-touch-icon.png _site/icons/
           touch _site/.nojekyll
       - name: Configure Pages
