@@ -22,23 +22,15 @@ function hardWords(n){
  (saved.history||[]).forEach(r=>{if(reportPack(r)===n)latest.set(r.word,r)});
  return book.getPack(n).words.filter(w=>latest.get(w.word)?.correct===false);
 }
-function closeVoice(){try{window.speechSynthesis.cancel()}catch(e){}}
+function closeVoice(){if(window.RekenVoice)window.RekenVoice.stop();else try{window.speechSynthesis.cancel()}catch(e){}}
 function voiceSelect(){
- const voices=typeof speechSynthesis==='undefined'?[]:speechSynthesis.getVoices();
- voice=voices.find(v=>/^nl[-_]BE$/i.test(v.lang))||voices.find(v=>/^nl/i.test(v.lang)&&/vlaams|belg|flemish/i.test(v.name))||null;
- voiceInfo=voice?'🇧🇪 Vlaamse stem: '+voice.name:'🇧🇪 nl-BE gevraagd. Een Vlaamse stem is niet gegarandeerd op dit toestel.';
+  if(window.RekenVoice){voiceInfo=window.RekenVoice.voiceInfo();return}
+  voiceInfo='⚠️ Geen Vlaamse stem beschikbaar. Ververs de app voor nieuw geluid.';
 }
-function speak(item,slow=false,example=false){
- if(!('speechSynthesis' in window)){message('Er is geen voorleesstem beschikbaar.');return}
- voiceSelect();
- try{
-   closeVoice();
-   const u=new SpeechSynthesisUtterance(example?item.example:item.phrase);
-   u.lang='nl-BE';if(voice)u.voice=voice;
-   u.rate=slow?.68:.86;u.pitch=1;
-   u.onerror=()=>message('Geluid niet beschikbaar. Kijk de steminstellingen van het toestel na.');
-   speechSynthesis.speak(u);message(voiceInfo);
- }catch(e){message('De voorleesstem werkt niet op dit toestel.')}
+function speak(item,slow=false,example=false,chunks=false){
+  if(!window.RekenVoice){message('Audio is nog niet geladen. Ververs de pagina.');return}
+  const mode=example?'example':chunks?'chunks':slow?'slow':'normal';
+  window.RekenVoice.speak(item,mode,message);
 }
 function message(s){const el=app.querySelector('#dict2-voice');if(el)el.textContent=s}
 function bind(id,fn){let el=app.querySelector('#'+id);if(el)el.addEventListener('click',fn)}
@@ -104,13 +96,13 @@ function play(){
  '<div class="step-progress"><div style="width:'+(session.idx/session.questions.length*100)+'%"></div></div>'+
  '<article class="question-card dict2-question"><div class="question-eyebrow">'+p.icon+' Luister en schrijf</div><h2>Welk woord hoor je?</h2>'+
  '<p class="hint">Luister naar het woord en schrijf het juist.</p><div class="dict-listening"><div class="dict-speaker">🎧</div>'+
- '<div class="dict-audio-buttons">'+button('dict2-hear','🔊 Luister')+button('dict2-slow','🐢 Langzaam','outline')+'</div>'+
+ '<div class="dict-audio-buttons">'+button('dict2-hear','🔊 Luister')+button('dict2-slow','🐢 Langzaam','outline')+button('dict2-chunks','🚂 In stukjes','outline')+'</div>'+
  '<p class="dict-note" id="dict2-voice" aria-live="polite">'+safe(voiceInfo)+'</p></div>'+
  '<form id="dict2-form"><label class="dict-label" for="dict2-write">✏️ Schrijf hier je antwoord</label>'+
  '<input id="dict2-write" class="dict-input" type="text" lang="nl-BE" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required maxlength="80" placeholder="Typ het woord…">'+
  '<p class="dict-note center">Je mag het woord of de hele uitdrukking schrijven.</p><div class="center"><button type="submit" class="btn green">✅ Controleer</button></div></form></article></section>');
  bind('dict2-stop',()=>{if(confirm('Wil je stoppen met dit dictee?')){closeVoice();page='menu';session=null;show()}});
- bind('dict2-hear',()=>speak(q));bind('dict2-slow',()=>speak(q,true));
+ bind('dict2-hear',()=>speak(q));bind('dict2-slow',()=>speak(q,true));bind('dict2-chunks',()=>speak(q,false,false,true));
  app.querySelector('#dict2-form').onsubmit=e=>{
   e.preventDefault();let input=app.querySelector('#dict2-write').value.trim();if(!input)return;
   closeVoice();last={word:q,typed:input,correct:equalTo(q,input)};
@@ -137,17 +129,34 @@ function specific(item){
 }
 function answerScreen(){
  const w=last.word,p=book.getPack(w.pack);
+ const coach=!last.correct&&window.RekenSpellingCoach?window.RekenSpellingCoach.diagnose(w,last.typed):null;
  shell('<section class="game"><article class="question-card dict-feedback dict2-answer">'+
  '<div class="feedback-icon">'+(last.correct?'🌟':'💡')+'</div><h2>'+(last.correct?'Helemaal juist!':'Goed geprobeerd!')+'</h2>'+
  (last.correct?'<p>Super! Jij hebt het goed geschreven.</p>':'<p>Bekijk even het juiste woord. Daar leer je van!</p><p>Je schreef: <strong>'+safe(last.typed)+'</strong></p>')+
- '<div class="dict-answer"><div class="dict-bigword">'+safe(w.word)+'</div><p>'+safe(w.phrase)+'</p></div>'+
+ '<div class="dict-answer"><div class="dict-bigword">'+safe(w.word)+'</div><p>'+safe(w.phrase)+'</p></div>'+ (coach?coach.html:'')+
  '<div class="dict-definition"><strong>📖 Betekenis</strong><p>'+safe(w.meaning)+'</p><small>🇪🇸 '+safe(w.es)+'</small></div>'+
  '<div class="dict-definition"><strong>💬 Voorbeeldzin</strong><p>'+safe(w.example)+'</p></div>'+
  '<div class="result-actions">'+button('dict2-repeat','🔊 Hoor opnieuw','outline')+
  button('dict2-example','💬 Hoor voorbeeld','outline')+button('dict2-rule','🧠 Spellingregel','outline')+'</div>'+
  '<div id="dict2-rule-panel" class="dict-rulebox" hidden><strong>'+p.icon+' '+safe(p.title)+'</strong><p>'+safe(p.summary)+'</p><p>'+safe(specific(w))+'</p></div>'+
+ (coach?'<form id="dict2-retry-form" class="coach-retry"><label for="dict2-retry-input">✏️ Probeer het woord zelf nog eens!</label>'+
+ '<input id="dict2-retry-input" autocomplete="off" autocorrect="off" spellcheck="false" lang="nl-BE" required placeholder="Schrijf het juiste woord">'+
+ '<button class="btn green" type="submit">✅ Opnieuw controleren</button><div id="dict2-retry-result" class="coach-retry-result" aria-live="polite"></div></form>':'')+
  '<div class="result-actions">'+button('dict2-next',session.idx+1===session.questions.length?'🏆 Bekijk mijn score':'Volgende woord →')+'</div></article></section>');
  bind('dict2-repeat',()=>speak(w));bind('dict2-example',()=>speak(w,false,true));
+ const retry=app.querySelector('#dict2-retry-form');
+ if(retry)retry.onsubmit=e=>{
+  e.preventDefault();const attempt=app.querySelector('#dict2-retry-input').value;
+  const result=app.querySelector('#dict2-retry-result');
+  if(equalTo(w,attempt)){
+   result.textContent='🌟 Helemaal goed verbeterd! Nu weet je het!';
+   app.querySelector('#dict2-retry-input').disabled=true;
+   retry.querySelector('button').disabled=true;
+  }else{
+   const hint=window.RekenSpellingCoach.diagnose(w,attempt);
+   result.textContent='💡 Bijna! '+hint.correct+' · Kijk nog eens naar de gekleurde letters hierboven.';
+  }
+ };
  bind('dict2-rule',()=>{let panel=app.querySelector('#dict2-rule-panel');panel.hidden=!panel.hidden});
  bind('dict2-next',()=>{
   session.idx++;
@@ -160,8 +169,8 @@ function answerScreen(){
  });
 }
 function arcade(){
- if(!window.RekenRetro){alert('Het bonusspel is niet beschikbaar. Open de app opnieuw.');return}
- closeVoice();window.RekenRetro.open({pack:session?.pack||pack,onBack:()=>{page='menu';show()}});
+ if(!window.RekenLetterblaster){alert('Het bonusspel is niet beschikbaar. Open de app opnieuw.');return}
+ closeVoice();window.RekenLetterblaster.open({pack:session?.pack||pack,onBack:()=>{page='menu';show()}});
 }
 function finish(){
  const correct=session.results.filter(r=>r.correct).length,total=session.results.length,pct=Math.round(correct/total*100),wrongs=session.results.filter(x=>!x.correct);
@@ -169,8 +178,8 @@ function finish(){
  '<h2>Dictee afgerond!</h2><div class="summary-score">'+pct+'%</div>'+
  '<p>Je schreef <strong>'+correct+' van '+total+'</strong> woorden juist.</p><div class="stars-big">'+(pct===100?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐')+'</div>'+
  (wrongs.length?'<div class="dict-definition"><strong>💪 Nog wat oefenen</strong><p>'+safe(wrongs.map(x=>x.word).join(', '))+'</p></div>':'<p>🎉 Alles juist, fantastisch!</p>')+
- (session.pack?'<div class="dict2-arcade-offer"><strong>🎮 BONUSNIVEAU VRIJ!</strong><p>Je hebt dit woordpakket afgerond. Speel nu één spannend 8-bit sterrenniveau!</p>'+
- button('dict2-arcade','🚀 Speel Sterrenraket','primary')+'</div>':
+ (session.pack?'<div class="dict2-arcade-offer"><strong>🎮 BONUSNIVEAU VRIJ!</strong><p>Je hebt dit woordpakket afgerond. Schiet de juiste woorden in Letterblaster en speel acht spannende rondes!</p>'+
+ button('dict2-arcade','🚀 Speel Letterblaster','primary')+'</div>':
  '<p>🌈 Je hebt woorden uit alle acht pakketten geoefend!</p>')+
  '<div class="result-actions">'+button('dict2-retry','🔁 Opnieuw oefenen','outline')+button('dict2-done','📚 Woordpakketten','outline')+'</div></article></section>');
  bind('dict2-arcade',arcade);
@@ -189,7 +198,7 @@ function study(){
  '<div class="dict2-study-copy"><strong>'+safe(w.phrase)+'</strong><small>🇪🇸 '+safe(w.es)+' • '+safe(w.meaning)+'</small><span>'+safe(w.example)+'</span></div>'+
  '<label class="dict2-studied"><input type="checkbox" data-mark="'+w.id+'" '+(marks.has(w.id)?'checked':'')+'><span>Geleerd</span></label></div>').join('')+'</div>'+
  (count===20?'<div class="dict2-arcade-offer"><h3>🏆 Alle 20 woorden geleerd!</h3><p>Jij hebt het hele woordpakket bestudeerd. Tijd voor je bonusniveau!</p>'+
- button('dict2-study-arcade','🚀 Speel je retrospel','primary')+'</div>':'<div class="dict2-progress-words">📖 '+count+' van de 20 woorden geleerd • Na 20/20 krijg je het 8-bit bonusspel.</div>')+
+ button('dict2-study-arcade','🚀 Speel Letterblaster','primary')+'</div>':'<div class="dict2-progress-words">📖 '+count+' van de 20 woorden geleerd • Na 20/20 krijg je het 8-bit bonusspel.</div>')+
  '<div class="result-actions">'+button('dict2-study-quiz','✍️ Oefen het dictee','violet')+
  button('dict2-study-return','📚 Terug naar de pakketten','outline')+'</div></article></section>');
  bind('dict2-study-back',()=>{page='menu';show()});bind('dict2-study-return',()=>{page='menu';show()});
