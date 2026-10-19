@@ -31,5 +31,5 @@ assert.ok(pet.includes("window.RekenPetStudio.open"),'Care scenes integrated');
 const mini=fs.readFileSync('forest-game.js','utf8');
 const box={};
 vm.runInNewContext(mini,{window:box,document:{getElementById:()=>({})}});
-assert.equal(typeof box.RekenPetPlay.open,'function','Pixel forest game integrated');
-console.log('PASS: perfected worlds lock, next-world advance, persistent history, protected pet-map navigation, petting, dancing and ball play.');
+assert.equal(typeof box.RekenForest.open,'function','Pixel forest game integrated');
+console.log('PASS: perfected worlds lock, next-world advance, persistent history, protected pet-map navigation, petting, dancing and forest platform play.');
