@@ -8,7 +8,7 @@ function btn(id,title,variant='violet'){return '<button class="btn '+variant+'" 
 function goBack(){window.location.reload()}
 function open(which='home'){tab=which;notice='';animalMenu=false;reaction='🐾 Aai mij of speel met mij!';render()}
 function scene(s){
- const p=s.pet,face=core.pets.find(x=>x.id===p.pet)?.icon||'🦊';
+ const p=s.pet,face=window.RekenPetStudio?window.RekenPetStudio.sprite(p.pet):core.pets.find(x=>x.id===p.pet)?.icon||'🦊';
  let furn=p.placed.map(id=>'<span class="pet-furniture" aria-label="'+esc(core.catalog.find(i=>i.id===id)?.name||'')+'">'+symbol(id)+'</span>').join('');
  return '<div class="pet-scene pet-room-'+(p.equip.room||'default')+'">'+
  '<div class="pet-room-ceiling">✦ ✧ ⭐ ✦</div><div class="pet-house-window"><span>☀️</span></div>'+
@@ -27,8 +27,8 @@ function home(s){
  const p=s.pet;
  return '<div class="pet-layout"><div class="pet-big-card">'+scene(s)+
  '<div class="pet-stats">'+stat('Blij',p.mood,'💗','#f47ca0')+stat('Energie',p.energy,'⚡','#f1c350')+stat('Proper',p.clean,'🫧','#5bcadf')+'</div>'+
- '<div class="pet-actions">'+btn('pet-feed','🥕 Eten geven','outline')+btn('pet-play','🎾 Speel met mij!','green')+btn('pet-wash','🛁 Wassen','outline')+btn('pet-rest','💤 Slapen','outline')+btn('pet-dance','💃 Samen dansen!','outline')+'</div>'+
- '<p class="pet-care-note">👆 Tik op je diertje om het te aaien. Laat het dansen of speel samen met de bal!</p></div>'+
+ '<div class="pet-actions">'+btn('pet-feed','🥕 Eten geven','outline')+btn('pet-play','🎮 Op avontuur!','green')+btn('pet-wash','🛁 Wassen','outline')+btn('pet-rest','💤 Slapen','outline')+btn('pet-dance','💃 Samen dansen!','outline')+'</div>'+
+ '<p class="pet-care-note">👆 Aai je vriendje of ga samen op avontuur. Eten, wassen, dansen en slapen zie je écht gebeuren!</p></div>'+
  '<div class="pet-side"><div class="pet-card"><div class="pet-card-head"><span>🐾 Mijn vriendje</span><span>💖</span></div>'+
  '<label class="pet-label" for="pet-name">Hoe heet je vriendje?</label><div class="pet-rename-row"><input id="pet-name" maxlength="16" value="'+esc(p.name)+'" placeholder="Naam van je dier">'+btn('pet-rename','Bewaar','outline')+'</div>'+
  '<p class="pet-note">Kies je lievelingsdier. Je kunt altijd veranderen.</p><div class="pet-animals">'+core.pets.map(x=>'<button class="pet-animal '+(p.pet===x.id?'chosen':'')+'" data-animal="'+x.id+'" aria-label="'+x.name+'" aria-pressed="'+(p.pet===x.id)+'">'+x.icon+'<small>'+x.name+'</small></button>').join('')+'</div></div>'+
@@ -92,15 +92,28 @@ function bind(){
  const by=id=>root.querySelector('#'+id);
  by('pet-back').onclick=goBack;
  root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;notice='';render()});
- const controls={feed:'🥕 Mmm, lekker gegeten!',wash:'🫧 Helemaal proper!',rest:'💤 Lekker uitgerust!'};
- Object.entries(controls).forEach(([action,message])=>{let b=by('pet-'+action);if(b)b.onclick=()=>{core.care(action==='feed'?'food':action);reaction=message;notice=message;render()}});
+ const actions={feed:'food',wash:'wash',rest:'rest',dance:'dance'};
+ Object.entries(actions).forEach(([buttonId,action])=>{
+   const b=by('pet-'+buttonId);if(!b)return;
+   b.onclick=()=>{
+     if(!window.RekenPetStudio){notice='Ververs de pagina om de nieuwe dierenwereld te openen.';render();return}
+     const p=core.snapshot().pet;
+     window.RekenPetStudio.open(action,{pet:p.pet,name:p.name,
+      onBack:()=>{reaction='💗 Wat fijn om samen te zijn!';render()},
+      onComplete:()=>{
+       core.care(action==='dance'?'play':action);
+       reaction={food:'🥕 Mmm, lekker gegeten!',wash:'🫧 Nu ben ik proper!',rest:'💤 Heerlijk uitgerust!',dance:'💃 Wat een leuk dansfeest!'}[action];
+      }
+     });
+   };
+ });
  const playButton=by('pet-play');
  if(playButton)playButton.onclick=()=>{
-   if(!window.RekenPetPlay){notice='Het balspel is nog niet geladen. Probeer opnieuw.';render();return}
+   if(!window.RekenForest){notice='Het bosavontuur is nog niet geladen. Probeer opnieuw.';render();return}
    const pet=core.snapshot().pet;
-   window.RekenPetPlay.open({name:pet.name,pet:pet.pet,
-    onBack:()=>{reaction='💗 Dat was leuk!';render()},
-    onComplete:()=>{core.care('play');reaction='🎾 Hoera, samen gespeeld!'}
+   window.RekenForest.open({name:pet.name,pet:pet.pet,mode:'pet',
+    onBack:()=>{reaction='💗 Wat was dat een avontuur!';render()},
+    onComplete:()=>{core.care('play');reaction='🎮 Geweldig avontuur!'}
    });
  };
  const pat=by('pet-pat');
@@ -112,14 +125,7 @@ function bind(){
   const heart=document.createElement('span');heart.className='pet-floating-heart';heart.textContent='💗';pat.appendChild(heart);
   setTimeout(()=>{heart.remove();pat.classList.remove('pet-petted')},1200);
  };
- const dance=by('pet-dance');
- if(dance)dance.onclick=()=>{
-  reaction='🎶 Kijk, ik dans!';
-  const bubble=by('pet-talk');if(bubble)bubble.textContent=reaction;
-  const sprite=by('pet-pat');if(sprite){sprite.classList.remove('pet-dancing');void sprite.offsetWidth;sprite.classList.add('pet-dancing');
-   setTimeout(()=>sprite.classList.remove('pet-dancing'),2200)}
- };
-  const rename=by('pet-rename');
+ const rename=by('pet-rename');
  if(rename)rename.onclick=()=>{const r=core.rename(by('pet-name').value);notice=r.ok?'🌈 Mooie naam!':'Vul eerst een naam in.';render()};
  root.querySelectorAll('[data-animal]').forEach(b=>b.onclick=()=>{core.choosePet(b.dataset.animal);notice='💞 Wat een lief vriendje!';render()});
  root.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render()});
