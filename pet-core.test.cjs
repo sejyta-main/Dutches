@@ -9,6 +9,7 @@ const localStorage={
  removeItem:k=>memory.delete(k)
 };
 const window={};
+vm.runInNewContext(fs.readFileSync('world-progress.js','utf8'),{window,localStorage,Math,JSON,Number,String,Array,Object,Set});
 vm.runInNewContext(code,{window,localStorage,Math,JSON,Number,String,Array,Object,Set});
 const core=window.RekenPetCore;
 assert.ok(core,'Pet engine must exist');
