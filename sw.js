@@ -1,9 +1,9 @@
 /* Rekenreis offline cache. Online-first for app code prevents old iPad versions. */
-const CACHE = 'rekenreis-v9-completed-worlds-pet-play';
+const CACHE = 'rekenreis-v10-full-pet-retro-voice';
 const APP = [
   './', './index.html', './style.css', './adventures.css',
   './rewards.css', './pet-world.css', './pet-home-install.css',
-  './world-progress.js', './app.js', './pet-play.js', './interactive-pet.css', './dictee.js', './woordpakketten.js', './dictee-v2.js', './retro-game.js', './dictee-v2.css', './memory-game.js', './activities.js',
+  './world-progress.js', './voice-engine.js', './spelling-coach.js', './pet-studio.js', './forest-game.js', './letterblaster.js', './pet-studio.css', './forest-game.css', './games-coach.css', './app.js', './pet-play.js', './interactive-pet.css', './dictee.js', './woordpakketten.js', './dictee-v2.js', './retro-game.js', './dictee-v2.css', './memory-game.js', './activities.js',
   './rewards.js', './pet-core.js', './pet-world.js', './pet-entry.js',
   './install-mobile.js', './manifest.webmanifest',
   './icons/icon.svg', './icons/icon-192.png',
@@ -25,6 +25,8 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
   const fresh = request.mode === 'navigate' || /\.(?:js|css|html|webmanifest)$/i.test(url.pathname);
+  // Voice clips are cached as they are listened to, so offline repeats work without slowing first install.
+  const clip = /\/audio\/nl-BE\/.*\.mp3$/i.test(url.pathname);
   const cached = () => caches.match(request, {ignoreSearch: true}).then(response =>
     response || (request.mode === 'navigate' ? caches.match('./index.html') : undefined)
   );
@@ -37,5 +39,7 @@ self.addEventListener('fetch', event => {
   });
   event.respondWith(fresh
     ? network().catch(() => cached().then(r => r || Response.error()))
-    : cached().then(r => r || network()));
+    : clip
+      ? cached().then(r => r || network())
+      : cached().then(r => r || network()));
 });
