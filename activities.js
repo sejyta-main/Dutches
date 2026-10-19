@@ -10,7 +10,7 @@ function update(){
  if(worlds&&!document.getElementById('extra-activities')){
   const n=mastery().length;
   const el=document.createElement('section');el.id='extra-activities';el.className='extra-activities';
-  el.innerHTML='<div class="section-heading"><h2>🎧 Dictee & bonus</h2></div><div class="dict-home-tile"><div class="dict-home-symbol">🎙️</div><div><strong>Dictee-eiland · Woordpakket 7</strong><p>Luister, typ en oefen de spellingregel.</p></div><button class="btn violet" id="start-dictee">🎧 Start dictee</button></div>'+
+  el.innerHTML='<div class="section-heading"><h2>🎧 Dictee & bonus</h2></div><div class="dict-home-tile"><div class="dict-home-symbol">🎙️</div><div><strong>Dictee-eiland · Woordpakket 1–8</strong><p>160 woorden, 8 schoolpakketten en een retrospel na elk pakket.</p></div><button class="btn violet" id="start-dictee">🎧 Start dictee</button></div>'+
   (n>=4?'<div class="dict-home-tile bonus-unlocked"><div class="dict-home-symbol">🦄</div><div><strong>Het magische memorybos</strong><p>Vier rekenwerelden met 10/10: het bonusspel is open!</p></div><button class="btn primary" id="start-memory">Speel memory!</button></div>':
   '<div class="dict-home-tile"><div class="dict-home-symbol">🔒</div><div><strong>Bonusspel</strong><p>Behaal 10 op 10 in vier verschillende werelden: '+n+'/4 behaald.</p></div></div>');
   worlds.insertAdjacentElement('afterend',el);
