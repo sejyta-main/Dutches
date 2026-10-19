@@ -24,11 +24,12 @@ assert.ok(app.includes("worldProgress.remember(data)"),'Record completed worlds 
 assert.ok(app.includes("Volgende wereld"),'Next world action on summary');
 const pet=fs.readFileSync('pet-world.js','utf8');
 assert.ok(pet.includes("if(!c?.unlocked||c.mastered)return"),'Pet map cannot bypass a completed world');
-assert.ok(pet.includes("window.RekenPetPlay.open"),'Pet mini-game integrated');
+assert.ok(pet.includes("window.RekenForest.open"),'Pet mini-game integrated');
 assert.ok(pet.includes("pet-pat"),'Pet can be petted');
 assert.ok(pet.includes("pet-dance"),'Pet can dance');
-const mini=fs.readFileSync('pet-play.js','utf8');
+assert.ok(pet.includes("window.RekenPetStudio.open"),'Care scenes integrated');
+const mini=fs.readFileSync('forest-game.js','utf8');
 const box={};
 vm.runInNewContext(mini,{window:box,document:{getElementById:()=>({})}});
-assert.equal(typeof box.RekenPetPlay.open,'function','Pet interaction game available');
+assert.equal(typeof box.RekenPetPlay.open,'function','Pixel forest game integrated');
 console.log('PASS: perfected worlds lock, next-world advance, persistent history, protected pet-map navigation, petting, dancing and ball play.');
