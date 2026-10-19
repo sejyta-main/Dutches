@@ -1,77 +1,51 @@
 'use strict';
-/* Perfect-score rewards. Works with the existing Rekenreis PWA and saved results. */
+/* Perfect-world reward: a real one-level pixel platformer, not tap-a-star. */
 (function(){
- const DATA='rekenreis-progress-v1',SEEN='rekenreis-last-reward-v1',MEDALS='rekenreis-earned-medals-v1';
- const WORLD_IDS=['blocks','place','words','line','compare'];
+ const KEY='rekenreis-progress-v1',SEEN='rekenreis-last-pixel-reward-v1',MEDALS='rekenreis-earned-medals-v1';
  const root=document.getElementById('app');
- let overlay=null,catches=0,starAt=-1,prizeReady=false,newChampion=false;
- function sessions(){try{const d=JSON.parse(localStorage.getItem(DATA)||'{}');return Array.isArray(d.sessions)?d.sessions:[]}catch(e){return []}}
- function mastered(list){return WORLD_IDS.filter(id=>list.some(s=>s.topic===id&&s.mode==='practice'&&s.total===10&&s.correct===10))}
- function sessionKey(s,index){return [index,s.date,s.topic,s.correct,s.total].join('|')}
+ let overlay=null;
+ function progress(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
+ function mastery(sessions){return ['blocks','place','words','line','compare'].filter(id=>sessions.some(s=>s.mode==='practice'&&s.topic===id&&s.total===10&&s.correct===10))}
+ function remove(){if(overlay){overlay.remove();overlay=null}}
+ function panel(content){
+  remove();overlay=document.createElement('section');overlay.className='pixel-reward-modal';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
+  overlay.innerHTML='<div class="pixel-reward-card">'+content+'</div>';document.body.appendChild(overlay);
+ }
  function check(){
   if(overlay||!root.querySelector('#home-summary'))return;
-  const all=sessions(),last=all[all.length-1];
+  const data=progress(),ss=Array.isArray(data.sessions)?data.sessions:[],last=ss[ss.length-1];
   if(!last||last.mode!=='practice'||last.total!==10||last.correct!==10)return;
-  const key=sessionKey(last,all.length);
+  const key=[ss.length,last.date,last.topic,last.total,last.correct].join('|');
   if(localStorage.getItem(SEEN)===key)return;
   try{localStorage.setItem(SEEN,key)}catch(e){}
-  const before=mastered(all.slice(0,-1)),after=mastered(all);
-  newChampion=before.length<4&&after.length>=4;
-  catches=0;prizeReady=false;
-  open();
- }
- function open(){
-  if(!overlay){
-   overlay=document.createElement('div');
-   overlay.id='reken-reward-overlay';
-   overlay.setAttribute('role','dialog');
-   overlay.setAttribute('aria-modal','true');
-   document.body.appendChild(overlay);
-  }
-  stage();
- }
- function close(){
-  if(overlay){overlay.remove();overlay=null}
- }
- function btn(label,id){return '<button type="button" class="btn primary" id="'+id+'">'+label+'</button>'}
- function stage(){
-  if(!overlay)return;
-  if(prizeReady){finish();return}
-  starAt=Math.floor(Math.random()*9);
-  let tiles=Array.from({length:9},(_,i)=>'<button class="reward-tile" type="button" data-star="'+i+'" aria-label="'+(i===starAt?'Gouden ster':'Wolkje')+'">'+(i===starAt?'🌟':'☁️')+'</button>').join('');
-  overlay.innerHTML='<div class="reward-window"><div class="reward-confetti">✨ 🎉 ✨</div><div class="reward-kicker">🏆 10 OP 10!</div>'+
-   '<h1>Wat knap, rekenheld!</h1><p>Je hebt alle tien vragen goed. Speel nu je verdiende <strong>sterrenspel!</strong></p>'+
-   '<div class="reward-score">🌟 Gevangen sterren: '+catches+' / 5</div>'+
-   '<div class="reward-grid">'+tiles+'</div>'+
-   '<p class="reward-hint">Tik op de gouden ster. Kun je ze alle vijf vangen?</p>'+
-   '<button class="reward-later" id="reward-close" type="button">Later spelen</button></div>';
-  overlay.querySelectorAll('[data-star]').forEach(b=>b.addEventListener('click',()=>{
-   if(Number(b.dataset.star)===starAt){
-    catches++;
-    if(catches>=5){prizeReady=true;try{localStorage.setItem(MEDALS,String((Number(localStorage.getItem(MEDALS))||0)+1))}catch(e){}}
-    stage();
-   }else{b.classList.add('reward-oops');b.textContent='💨'}
-  }));
-  overlay.querySelector('#reward-close').onclick=close;
- }
- function finish(){
-  const count=Number(localStorage.getItem(MEDALS))||1;
-  overlay.innerHTML='<div class="reward-window reward-finish"><div class="reward-confetti">🎊 🏅 🎊</div>'+
-   '<h1>Je bent een sterrenkampioen!</h1><p>Vijf sterren gevangen. Je verdient een nieuwe gouden medaille!</p>'+
-   '<div class="reward-trophy">🏅</div><p><strong>Medaille '+count+' verdiend!</strong></p>'+
-   (newChampion?'<div class="reward-special"><h2>🔓 Extra verrassing!</h2><p>Vier verschillende rekenwerelden met 10/10! Het magische memorybos is nu vrijgespeeld.</p>'+
-    btn('🦄 Speel het speciale memoryspel','reward-special-game')+'</div>':'<p>Blijf oefenen voor het geheime bonusspel na vier perfecte werelden.</p>')+
-   '<button type="button" id="reward-done" class="btn outline">🏠 Terug naar mijn resultaten</button></div>';
-  overlay.querySelector('#reward-done').onclick=close;
-  const play=overlay.querySelector('#reward-special-game');
-  if(play)play.onclick=()=>{
-   close();
-   if(window.RekenBonus){
-    window.RekenBonus.open({onBack:()=>window.location.reload(),onReward:()=>{}});
-   }else alert('Het memoryspel is nog niet geladen. Open het via het startscherm.');
+  const before=mastery(ss.slice(0,-1)).length,now=mastery(ss).length;
+  const four=before<4&&now>=4;
+  panel('<div class="pixel-reward-icon">🏅</div><h2>10 op 10! Fantastisch!</h2>'+
+   '<p>Je hebt deze wereld perfect voltooid! Nu wacht een echt <strong>pixelavontuur</strong> met een bos, hindernissen en een kasteel.</p>'+
+   '<button class="btn primary" id="pixel-reward-play">🎮 START PIXEL BOSAVONTUUR</button>'+
+   '<button class="btn outline" id="pixel-reward-later">Later spelen</button>');
+  overlay.querySelector('#pixel-reward-later').onclick=remove;
+  overlay.querySelector('#pixel-reward-play').onclick=()=>{
+   remove();
+   if(!window.RekenForest){alert('Het pixelspel is nog niet geladen. Ververs Rekenreis.');return}
+   window.RekenForest.open({mode:'math',onBack:()=>location.reload(),onComplete:()=>{
+    try{localStorage.setItem(MEDALS,String((Number(localStorage.getItem(MEDALS))||0)+1))}catch(e){}
+    const count=Number(localStorage.getItem(MEDALS))||1;
+    panel('<div class="pixel-reward-icon">🏆</div><h2>LEVEL GEHAALD!</h2>'+
+    '<p>Je hebt je gouden pixelmedaille verdiend! Totaal: <strong>'+count+'</strong>.</p>'+
+    (four?'<div class="pixel-extra"><h3>🎉 GROOT GEHEIM ONTGRENDELD!</h3><p>Vier perfecte werelden. Het magische memorybos is nu beschikbaar!</p>'+
+    '<button class="btn violet" id="pixel-reward-memory">🦄 Speel het memorybos</button></div>':'')+
+    '<button class="btn outline" id="pixel-reward-finish">🏠 Naar de werelden</button>');
+    overlay.querySelector('#pixel-reward-finish').onclick=()=>{remove();location.reload()};
+    const special=overlay.querySelector('#pixel-reward-memory');
+    if(special)special.onclick=()=>{
+     remove();
+     window.RekenBonus?.open({onBack:()=>location.reload(),onReward:()=>{}});
+    };
+   }});
   };
  }
  new MutationObserver(check).observe(root,{childList:true});
  check();
- window.RekenRewards={mastered,check};
+ window.RekenRewards=Object.freeze({check,mastered:mastery});
 })();
