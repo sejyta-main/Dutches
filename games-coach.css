@@ -43,3 +43,12 @@
 .coach-retry input{max-width:440px;width:100%;border:2px solid #83c3a4;border-radius:14px;font-size:24px;text-align:center;padding:12px;color:#376051}
 .coach-retry-result{color:#396e56;font-weight:900;min-height:25px}
 @media(max-width:520px){.blaster-target{padding:6px 2px;min-height:90px}.blaster-target span{padding-bottom:3px}.blaster-controls{gap:8px}.blaster-btn.shoot{font-size:16px}.coach-compare strong{font-size:18px}.coach-panel{padding:12px}}
+
+/* Pixel reward overlays retain the school score underneath. */
+.pixel-reward-modal{position:fixed;inset:0;z-index:99999;background:#151238cc;display:grid;place-items:center;overflow:auto;padding:20px}
+.pixel-reward-card{background:linear-gradient(135deg,#fff4c5,#f0f7ff);border:5px solid #fff;border-radius:29px;padding:clamp(17px,4vw,36px);max-width:610px;width:100%;text-align:center;color:#59439c;box-shadow:0 20px 50px #15132d88}
+.pixel-reward-card h2{font-size:clamp(24px,5vw,35px);color:#7050bd}.pixel-reward-card p{font-size:17px;line-height:1.5}
+.pixel-reward-card>.btn{display:block;width:100%;margin:12px auto;min-height:51px}
+.pixel-reward-icon{font-size:80px;animation:reward-celebrate .8s ease-out}
+.pixel-extra{background:#fdf4cd;border:3px solid #e9d28a;border-radius:18px;padding:18px;margin:18px 0}
+.pixel-extra h3{font-size:23px}.pixel-extra p{font-size:15px}
