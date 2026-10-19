@@ -63,10 +63,10 @@ function closet(s){
 function map(s){
  const n=s.chapters.filter(c=>c.unlocked).length;
  return '<section class="pet-map"><h2>🗺️ De magische avonturenkaart</h2>'+
- '<p>Ontdek een nieuwe wereld door te oefenen en XP te verzamelen. <b>De gewone rekentaken blijven altijd beschikbaar</b>, ook als een avonturenwereld nog op slot zit.</p>'+
+ '<p>Ontgrendel nieuwe werelden met XP. <b>Een wereld met 10/10 is voltooid en blijft dicht</b>, zodat je andere werelden kunt ontdekken. Je kunt altijd de gemengde toets oefenen.</p>'+
  '<div class="pet-world-count">✨ '+n+' van 5 avonturenwerelden geopend</div>'+
  '<div class="pet-map-path">'+s.chapters.map((c,i)=>{
-  const next=s.chapters[i+1],locked=!c.unlocked;
+  const next=s.chapters[i+1],locked=!c.unlocked,finished=!!c.mastered;
   const label=c.mastered?'🏅 Perfect uitgespeeld':locked?'🔒 Nog '+(c.xp-s.xp)+' XP':'🌟 Klaar om te spelen';
   return '<div class="pet-map-stage '+(locked?'locked':'unlocked')+'"><span class="pet-map-stop">'+c.icon+'</span>'+
    '<div class="pet-map-details"><span class="pet-map-chapter">WERELD '+c.index+'</span><h3>'+c.name+'</h3><p>'+c.desc+'</p><span class="pet-map-tag">'+label+'</span></div>'+
@@ -106,7 +106,7 @@ function bind(){
  [['pet-shop-now','shop'],['pet-map-now','map'],['pet-closet-shop','shop']].forEach(([id,to])=>{const b=by(id);if(b)b.onclick=()=>{tab=to;notice='';render()}});
  root.querySelectorAll('[data-quest]').forEach(b=>b.onclick=()=>{
   const c=core.snapshot().chapters.find(x=>x.id===b.dataset.quest);
-  if(!c?.unlocked)return;
+  if(!c?.unlocked||c.mastered)return;
   try{sessionStorage.setItem('rekenreis-next-world',c.id)}catch(e){}
   goBack();
  });
