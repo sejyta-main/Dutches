@@ -63,7 +63,7 @@
  }
  function snapshot(){
   const pet=load(),math=numbers(),level=levels(math.xp);
-  const mastered=chapters.filter(c=>math.mathSessions.some(s=>s.topic===c.id&&s.mode==='practice'&&s.total===10&&s.correct===10)).map(c=>c.id);
+  const mastered=window.RekenWorldProgress.mastered(json(MATH));
   return {pet,...math,...level,coins:Math.max(0,math.earned-pet.spent),
    chapters:chapters.map((c,i)=>({...c,index:i+1,unlocked:math.xp>=c.xp,mastered:mastered.includes(c.id)})),
    mastered,bonusUnlocked:mastered.length>=4};
