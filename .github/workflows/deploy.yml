@@ -36,6 +36,12 @@ jobs:
         run: |
           node --check world-progress.js
           node --check app.js
+          node --check voice-engine.js
+          node --check spelling-coach.js
+          node --check pet-studio.js
+          node --check forest-game.js
+          node --check letterblaster.js
+          node v2-adventure.test.cjs
           node --check pet-play.js
           node world-progress.test.cjs
           node --check dictee.js
@@ -56,11 +62,25 @@ jobs:
         run: python -m pip install Pillow
       - name: Generate PWA and Apple touch icons
         run: python scripts/build_icons.py
+      - name: Cache Flemish audio recordings
+        uses: actions/cache@v4
+        with:
+          path: _audio_cache
+          key: flemish-audio-v1-${{ hashFiles('woordpakketten.js') }}
+      - name: Prepare Flemish neural speech
+        run: |
+          node scripts/export_voice_data.cjs
+          python -m pip install edge-tts
+      - name: Generate Belgian Dutch recordings (best effort)
+        timeout-minutes: 10
+        continue-on-error: true
+        run: python scripts/build_flemish_audio.py
       - name: Collect static web app
         run: |
-          mkdir -p _site/icons
-          cp index.html world-progress.js app.js pet-play.js dictee.js woordpakketten.js dictee-v2.js retro-game.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js install-mobile.js style.css adventures.css rewards.css pet-world.css pet-home-install.css dictee-v2.css interactive-pet.css sw.js manifest.webmanifest _site/
+          mkdir -p _site/icons _site/audio/nl-BE
+          cp index.html voice-engine.js spelling-coach.js pet-studio.js forest-game.js letterblaster.js world-progress.js app.js pet-play.js dictee.js woordpakketten.js dictee-v2.js retro-game.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js install-mobile.js style.css adventures.css rewards.css pet-world.css pet-home-install.css dictee-v2.css interactive-pet.css pet-studio.css forest-game.css games-coach.css sw.js manifest.webmanifest _site/
           cp icons/icon.svg icons/icon-192.png icons/icon-512.png icons/apple-touch-icon.png _site/icons/
+          if test -d _audio_cache; then find _audio_cache -maxdepth 1 -type f \( -name '*.mp3' -o -name 'manifest.json' \) -exec cp {} _site/audio/nl-BE/ \;; fi
           touch _site/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
