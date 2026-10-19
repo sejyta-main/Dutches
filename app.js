@@ -13,13 +13,15 @@ const BELOW20=['nul','een','twee','drie','vier','vijf','zes','zeven','acht','neg
 const TENS=['','','twintig','dertig','veertig','vijftig','zestig','zeventig','tachtig','negentig'];
 const appRoot=document.getElementById('app');
 let data=load();
+const worldProgress=window.RekenWorldProgress;
+if(worldProgress){worldProgress.remember(data);save();}
 let state={screen:'home',session:null,answer:null,sort:[],installed:window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true};
 let installPrompt=null;
 const random=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
 const pick=a=>a[random(0,a.length-1)];
 const shuffle=a=>a.slice().sort(()=>Math.random()-.5);
 const htmlSafe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function load(){try{let v=JSON.parse(localStorage.getItem(STORE)||'{}');return {name:typeof v.name==='string'?v.name:'Elena',sound:v.sound!==false,coins:Math.max(0,Number(v.coins)||0),history:Array.isArray(v.history)?v.history:[],sessions:Array.isArray(v.sessions)?v.sessions:[]};}catch(e){return {name:'Elena',sound:true,coins:0,history:[],sessions:[]}}}
+function load(){try{let v=JSON.parse(localStorage.getItem(STORE)||'{}');return {name:typeof v.name==='string'?v.name:'Elena',sound:v.sound!==false,coins:Math.max(0,Number(v.coins)||0),history:Array.isArray(v.history)?v.history:[],sessions:Array.isArray(v.sessions)?v.sessions:[],masteredWorlds:Array.isArray(v.masteredWorlds)?v.masteredWorlds:[]};}catch(e){return {name:'Elena',sound:true,coins:0,history:[],sessions:[],masteredWorlds:[]}}}
 function save(){try{localStorage.setItem(STORE,JSON.stringify(data))}catch(e){/* private browsing may block storage */}}
 function dutch(n){
  if(n===1000)return 'duizend';
@@ -64,36 +66,42 @@ function goHome(){if(state.screen==='game'&&state.session&&!confirm('Wil je stop
 function totalPlayed(){return data.sessions.reduce((n,s)=>n+s.total,0)}
 function home(){
  const count=data.sessions.length;
+ const completed=worldProgress?worldProgress.mastered(data):[];
+ const next=worldProgress?worldProgress.remaining(data):TOPICS.map(t=>t.id);
  let worlds=TOPICS.map((t,i)=>{
- const s=scoreFor(t.id);
- return '<button class="world" data-world="'+t.id+'" style="--world:'+t.color+'"><span class="num">WERELD '+(i+1)+'</span><span class="world-emoji">'+t.emoji+'</span>'+
- '<strong>'+t.name+'</strong><span class="descr">'+t.short+'</span>'+
- '<span class="world-foot"><span>'+(s.total?s.percent+'% goed':'Nog te ontdekken')+'</span><span class="mini-bar"><i style="width:'+s.percent+'%"></i></span></span></button>';
+ const s=scoreFor(t.id),done=completed.includes(t.id);
+ return '<button class="world '+(done?'world-completed':'')+'" data-world="'+t.id+'" style="--world:'+t.color+'" '+(done?'disabled aria-disabled="true" title="Wereld voltooid met 10 op 10"':'')+'>'+
+ '<span class="num">'+(done?'🏅 VOLTOOID':'WERELD '+(i+1))+'</span><span class="world-emoji">'+t.emoji+'</span>'+
+ '<strong>'+t.name+'</strong><span class="descr">'+(done?'10/10 behaald! Op naar de volgende wereld.':t.short)+'</span>'+
+ '<span class="world-foot"><span>'+(done?'✅ 100% PERFECT':s.total?s.percent+'% goed':'Nog te ontdekken')+'</span><span class="mini-bar"><i style="width:'+(done?100:s.percent)+'%"></i></span></span></button>';
  }).join('');
  const total=data.history.length,correct=data.history.filter(x=>x.correct).length,pct=total?Math.round(correct/total*100):0;
  return '<section class="hero"><div class="copy"><div class="eyebrow">🌈 Welkom in het getallenrijk</div><h1>Hoi '+htmlSafe(data.name)+'! Klaar voor een rekenavontuur?</h1>'+
  '<p>Ontdek vijf leuke werelden, verzamel sterren en word een echte getallenheld!</p>'+button('start-exam','🎯 Start de oefentoets','primary')+'</div><div class="mascot" role="img" aria-label="Vrolijk vosje">🦊</div></section>'+
- '<div class="section-heading"><h2>🗺️ Kies jouw wereld</h2><span class="muted">5 avonturen</span></div><section class="worlds">'+worlds+'</section>'+
+ '<div class="section-heading"><h2>🗺️ Kies jouw wereld</h2><span class="muted">🏅 '+completed.length+'/5 voltooid</span></div>'+
+ '<p class="hint">'+(next.length?'Een wereld met 10/10 krijgt een medaille en gaat op slot. Kies dan een andere wereld!':'🎉 Alle vijf werelden zijn perfect! Je kunt blijven oefenen met de gemengde oefentoets en Dictee-eiland.')+'</p><section class="worlds">'+worlds+'</section>'+
  '<section class="bottom-panels"><div class="panel"><h3>🏆 Mijn avontuur</h3><p>Je hebt al '+totalPlayed()+' vragen gespeeld in '+count+' oefenrondes.</p>'+
  '<div class="progress-track"><div style="width:'+pct+'%"></div></div><p style="margin-top:9px">'+(total?pct+'% goed beantwoord':'Begin je eerste avontuur!')+'</p>'+button('weak-practice','🪄 Oefen wat lastig is','outline')+'</div>'+
  '<div class="panel"><h3>📲 Ook op je iPad!</h3><p>Zet Rekenreis op je beginscherm. Daarna kun je zelfs zonder internet spelen.</p>'+button('installation','📱 Zo installeer je de app','outline')+'</div></section>';
 }
 function bindHome(){
- document.querySelectorAll('[data-world]').forEach(el=>el.addEventListener('click',()=>start('practice',el.getAttribute('data-world'))));
+ document.querySelectorAll('[data-world]:not(:disabled)').forEach(el=>el.addEventListener('click',()=>start('practice',el.getAttribute('data-world'))));
  connect('start-exam',()=>start('exam'));
  connect('weak-practice',()=>start('weak'));
  connect('installation',()=>{state.screen='install';render()});
 }
 function start(mode,id){
+ if(mode==='practice'&&worldProgress&&worldProgress.isCompleted(data,id)){state.screen='home';render();return}
  let ids=[];
  if(mode==='practice')ids=Array(10).fill(id);
  else if(mode==='exam')ids=shuffle(TOPICS.flatMap(t=>Array(4).fill(t.id)));
  else{
- let ranked=TOPICS.slice().sort((a,b)=>{
+ let open=worldProgress?worldProgress.remaining(data):TOPICS.map(t=>t.id);
+ let ranked=TOPICS.filter(t=>open.length===0||open.includes(t.id)).sort((a,b)=>{
   let x=scoreFor(a.id),y=scoreFor(b.id);
   return (x.total?x.percent:101)-(y.total?y.percent:101);
  });
- ids=Array(10).fill(null).map((_,i)=>ranked[i%3].id);
+ ids=Array(10).fill(null).map((_,i)=>ranked[i%Math.min(3,ranked.length)].id);
  ids=shuffle(ids);
  }
  let questions=ids.map(i=>generate(i));
@@ -232,22 +240,33 @@ function advance(){
  if(s.idx+1<s.questions.length){s.idx++;state.sort=[];state.answer=null;state.screen='game';render();return}
  let correct=s.results.filter(r=>r.correct).length,percent=Math.round(100*correct/s.questions.length);
  data.sessions.push({date:new Date().toISOString(),mode:s.mode,topic:s.topic||'mixed',total:s.questions.length,correct,percent});
- data.sessions=data.sessions.slice(-100);save();state.screen='summary';render();
+ data.sessions=data.sessions.slice(-100);
+ if(worldProgress)worldProgress.remember(data);
+ save();state.screen='summary';render();
 }
 function summary(){
  const s=state.session,correct=s.results.filter(r=>r.correct).length,percent=Math.round(100*correct/s.results.length);
  let stars=percent>=90?'⭐⭐⭐':percent>=65?'⭐⭐':'⭐';
  let misses=s.results.filter(x=>!x.correct);
+ const completed=s.mode==='practice'&&correct===10&&s.results.length===10;
+ const nextWorld=worldProgress?worldProgress.remaining(data)[0]:null;
  return '<section class="game"><article class="question-card feedback">'+
  '<div class="feedback-icon">🏆</div><h2>Avontuur afgerond!</h2><div class="stars-big">'+stars+'</div>'+
  '<div class="summary-score">'+percent+'%</div>'+
  '<p>Je had <strong>'+correct+' van de '+s.results.length+'</strong> vragen goed. '+(percent>=80?'Fantastisch gewerkt!':'Elke oefening maakt je sterker!')+'</p>'+
  '<div class="score-grid" style="width:100%"><div class="score-tile"><strong>'+correct+'</strong><small>Goed</small></div><div class="score-tile"><strong>'+misses.length+'</strong><small>Bijleren</small></div><div class="score-tile"><strong>+'+(correct*10)+'</strong><small>Sterren</small></div></div>'+
+ (completed?'<div class="world-win-banner"><strong>🏅 10/10! Deze wereld is voltooid!</strong><p>Deze wereld gaat op slot. '+(nextWorld?'Kies nu een andere rekenwereld om verder te reizen!':'Alle vijf werelden zijn nu perfect uitgespeeld!')+'</p></div>':'')+
  (misses.length?'<div class="explain"><strong>💡 Dit kun je nog oefenen:</strong><p>'+htmlSafe([...new Set(misses.map(m=>topic(m.topic).name))].join(', '))+'.</p></div>':'<div class="explain">🎉 Alles goed! Jij bent een echte getallenkampioen!</div>')+
- '<div class="result-actions">'+button('redo','🔁 Nog een rondje','violet')+button('dash-summary','📊 Mijn resultaten','outline')+button('home-summary','🏠 Startscherm','outline')+'</div></article></section>';
+ '<div class="result-actions">'+button('redo',completed?(nextWorld?'🗺️ Volgende wereld →':'🎯 Gemengde oefentoets'):'🔁 Nog een rondje','violet')+button('dash-summary','📊 Mijn resultaten','outline')+button('home-summary','🏠 Startscherm','outline')+'</div></article></section>';
 }
 function bindSummary(){
- connect('redo',()=>start(state.session.mode,state.session.topic));
+ connect('redo',()=>{
+   const s=state.session;
+   if(s.mode==='practice'&&worldProgress&&worldProgress.isCompleted(data,s.topic)){
+     const next=worldProgress.remaining(data)[0];
+     if(next)start('practice',next);else start('exam');
+   }else start(s.mode,s.topic);
+ });
  connect('dash-summary',()=>{state.screen='dashboard';render()});
  connect('home-summary',()=>goHome());
 }
