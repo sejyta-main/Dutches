@@ -7,7 +7,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const symbol=id=>core.catalog.find(x=>x.id===id)?.icon||'';
 function btn(id,title,variant='violet'){return '<button class="btn '+variant+'" type="button" id="'+id+'">'+title+'</button>'}
 function goBack(){window.location.reload()}
-function open(which='home'){tab=which;notice='';animalMenu=false;reaction='🐾 Aai mij of speel met mij!';render()}
+function open(which='home'){tab=which;notice='';animalMenu=false;reaction='🐾 Aai mij of speel met mij!';render();window.RekenNavigation?.top()}
 function scene(s){
  const p=s.pet,face=window.RekenPetStudio?window.RekenPetStudio.sprite(p.pet):core.pets.find(x=>x.id===p.pet)?.icon||'🦊';
  let furn=p.placed.map(id=>'<span class="pet-furniture" aria-label="'+esc(core.catalog.find(i=>i.id===id)?.name||'')+'">'+symbol(id)+'</span>').join('');
@@ -92,7 +92,7 @@ function render(){
 function bind(){
  const by=id=>root.querySelector('#'+id);
  by('pet-back').onclick=goBack;
- root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;notice='';render()});
+ root.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;notice='';render();window.RekenNavigation?.top()});
  const actions={feed:'food',wash:'wash',rest:'rest',dance:'dance'};
  Object.entries(actions).forEach(([buttonId,action])=>{
    const b=by('pet-'+buttonId);if(!b)return;
@@ -136,7 +136,7 @@ function bind(){
   notice=result.ok?'🎉 '+item.name+'! '+(s.pet.owned.includes(id)?'Mooi gekozen!':'Nu van jou!'):result.reason;render();
  });
  root.querySelectorAll('[data-wear]').forEach(b=>b.onclick=()=>{const item=core.catalog.find(x=>x.id===b.dataset.wear);core.equip(item.id);notice='✨ '+item.name+'!';render()});
- [['pet-shop-now','shop'],['pet-map-now','map'],['pet-closet-shop','shop']].forEach(([id,to])=>{const b=by(id);if(b)b.onclick=()=>{tab=to;notice='';render()}});
+ [['pet-shop-now','shop'],['pet-map-now','map'],['pet-closet-shop','shop']].forEach(([id,to])=>{const b=by(id);if(b)b.onclick=()=>{tab=to;notice='';render();window.RekenNavigation?.top()}});
  root.querySelectorAll('[data-quest]').forEach(b=>b.onclick=()=>{
   const c=core.snapshot().chapters.find(x=>x.id===b.dataset.quest);
   if(!c?.unlocked||c.mastered)return;
