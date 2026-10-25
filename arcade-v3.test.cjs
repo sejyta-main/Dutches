@@ -30,7 +30,7 @@ assert.equal(hub.open('unknown',{}),false);
 const dict=fs.readFileSync('dictee-v2.js','utf8');
 assert.ok(dict.includes('window.RekenArcade?.next()'),'Next reward chosen on completion');
 assert.ok(dict.includes('offerHTML(session.arcadeGame)'),'Reward game choice displayed with session results');
-assert.ok(dict.includes("page=from;show()"),'Game returns to existing summary without discarding results');
+assert.ok(dict.includes("page=from;lastView='';show()"),'Game returns to existing summary without discarding results');
 assert.ok(dict.includes("session.arcadeGame=window.RekenArcade?.next()"),'Round re-render does not generate another choice');
 assert.ok(!dict.includes('window.RekenLetterblaster.open'),'Old static word-choice game no longer launched from dictee');
 const paths=['arcade-invaders.js','arcade-breakout.js','forest-game.js'];
