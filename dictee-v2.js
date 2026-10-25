@@ -51,7 +51,7 @@ function menu(){
  const p=book.getPack(pack),attempts=(saved.history||[]).length;
  shell('<section class="dict-hero"><div><div class="eyebrow">🎓 Klaar voor de spellingtoets?</div><h1>🎧 Dictee-eiland</h1>'+
  '<p>Oefen alle acht woordpakketten. Luister, schrijf en leer op jouw tempo!</p>'+
- '<span class="dict-chip">8 woordpakketten</span><span class="dict-chip">160 woorden</span><span class="dict-chip">🎮 8-bit bonusspel</span></div><div class="dict-hero-art">🦊✏️</div></section>'+
+ '<span class="dict-chip">8 woordpakketten</span><span class="dict-chip">160 woorden</span><span class="dict-chip">🎮 3 echte retrogames</span></div><div class="dict-hero-art">🦊✏️</div></section>'+
  '<div class="section-heading"><h2>📚 Kies jouw woordpakket</h2></div>'+
  '<div class="dict2-packs">'+book.packs.map(x=>{
   const s=packStats(x.number),stud=studies(x.number).size;
@@ -168,21 +168,24 @@ function answerScreen(){
   }
  });
 }
-function arcade(){
- if(!window.RekenLetterblaster){alert('Het bonusspel is niet beschikbaar. Open de app opnieuw.');return}
- closeVoice();window.RekenLetterblaster.open({pack:session?.pack||pack,onBack:()=>{page='menu';show()}});
+function arcade(id){
+ const arcade=window.RekenArcade;
+ if(!arcade){alert('De nieuwe retrospellen zijn nog niet geladen. Ververs de pagina.');return}
+ const from=page,selected=id||session?.arcadeGame||arcade.peek();
+ const ok=arcade.open(selected,{pack:session?.pack||pack,
+  onBack:()=>{page=from;show()}});
+ if(!ok)alert('Dit spel kon niet starten. Ververs de app en probeer opnieuw.');
 }
 function finish(){
  const correct=session.results.filter(r=>r.correct).length,total=session.results.length,pct=Math.round(correct/total*100),wrongs=session.results.filter(x=>!x.correct);
+ if(!session.arcadeGame)session.arcadeGame=window.RekenArcade?.next()||'invaders';
  shell('<section class="game"><article class="question-card feedback dict2-finish"><div class="feedback-icon">🏆</div>'+
  '<h2>Dictee afgerond!</h2><div class="summary-score">'+pct+'%</div>'+
  '<p>Je schreef <strong>'+correct+' van '+total+'</strong> woorden juist.</p><div class="stars-big">'+(pct===100?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐')+'</div>'+
  (wrongs.length?'<div class="dict-definition"><strong>💪 Nog wat oefenen</strong><p>'+safe(wrongs.map(x=>x.word).join(', '))+'</p></div>':'<p>🎉 Alles juist, fantastisch!</p>')+
- (session.pack?'<div class="dict2-arcade-offer"><strong>🎮 BONUSNIVEAU VRIJ!</strong><p>Je hebt dit woordpakket afgerond. Schiet de juiste woorden in Letterblaster en speel acht spannende rondes!</p>'+
- button('dict2-arcade','🚀 Speel Letterblaster','primary')+'</div>':
- '<p>🌈 Je hebt woorden uit alle acht pakketten geoefend!</p>')+
+ (window.RekenArcade?window.RekenArcade.offerHTML(session.arcadeGame):'<p>🎮 Retrogames worden geladen...</p>')+
  '<div class="result-actions">'+button('dict2-retry','🔁 Opnieuw oefenen','outline')+button('dict2-done','📚 Woordpakketten','outline')+'</div></article></section>');
- bind('dict2-arcade',arcade);
+ app.querySelectorAll('[data-arcade-game]').forEach(el=>el.onclick=()=>arcade(el.dataset.arcadeGame));
  bind('dict2-retry',()=>begin(session.mode));bind('dict2-done',()=>{session=null;page='menu';show()});
 }
 function study(){
@@ -197,13 +200,12 @@ function study(){
  '<button type="button" class="dict2-hear" data-hear="'+w.id+'" aria-label="Luister naar '+safe(w.word)+'">🔊</button>'+
  '<div class="dict2-study-copy"><strong>'+safe(w.phrase)+'</strong><small>🇪🇸 '+safe(w.es)+' • '+safe(w.meaning)+'</small><span>'+safe(w.example)+'</span></div>'+
  '<label class="dict2-studied"><input type="checkbox" data-mark="'+w.id+'" '+(marks.has(w.id)?'checked':'')+'><span>Geleerd</span></label></div>').join('')+'</div>'+
- (count===20?'<div class="dict2-arcade-offer"><h3>🏆 Alle 20 woorden geleerd!</h3><p>Jij hebt het hele woordpakket bestudeerd. Tijd voor je bonusniveau!</p>'+
- button('dict2-study-arcade','🚀 Speel Letterblaster','primary')+'</div>':'<div class="dict2-progress-words">📖 '+count+' van de 20 woorden geleerd • Na 20/20 krijg je het 8-bit bonusspel.</div>')+
+ (count===20?(window.RekenArcade?window.RekenArcade.offerHTML(window.RekenArcade.peek()):'<p>🎮 Retrogames worden geladen...</p>'):'<div class="dict2-progress-words">📖 '+count+' van de 20 woorden geleerd • Na 20/20 kies je een retrospel.</div>')+
  '<div class="result-actions">'+button('dict2-study-quiz','✍️ Oefen het dictee','violet')+
  button('dict2-study-return','📚 Terug naar de pakketten','outline')+'</div></article></section>');
  bind('dict2-study-back',()=>{page='menu';show()});bind('dict2-study-return',()=>{page='menu';show()});
  bind('dict2-study-quiz',()=>begin('full'));
- bind('dict2-study-arcade',()=>{session={pack};arcade()});
+ app.querySelectorAll('[data-arcade-game]').forEach(el=>el.onclick=()=>arcade(el.dataset.arcadeGame));
  app.querySelectorAll('[data-hear]').forEach(b=>b.onclick=()=>speak(p.words.find(w=>w.id===b.dataset.hear)));
  app.querySelectorAll('[data-mark]').forEach(b=>b.onchange=()=>{
   let now=studies(pack);if(b.checked)now.add(b.dataset.mark);else now.delete(b.dataset.mark);
