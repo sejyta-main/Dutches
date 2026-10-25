@@ -1,6 +1,7 @@
 'use strict';
 /* Original Atari-inspired brick breaker with physics, touch drag and keyboard. */
 (function(){
+ const bi=(nl,en)=>window.RekenTaal?window.RekenTaal.pair(nl,en):nl;
  const root=document.getElementById('app'),W=480,H=340;
  let g=null,raf=0,prev=0;
  const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
@@ -16,11 +17,11 @@
  }
  function render(){
   root.innerHTML='<main class="shell arcade-v3-shell"><header class="topbar"><button class="logo" id="brick-back"><span class="logo-badge">🧱</span><strong>Rekenreis Arcade</strong></button><span class="pill star">🎮 LEVEL 1</span></header>'+
-  '<section class="arcade-v3-panel"><h1>🧱 Blokkenbreker</h1><p>Beweeg je batje, kaats de bal terug en breek alle kleurrijke blokken!</p>'+
+  '<section class="arcade-v3-panel"><h1>🧱 Blokkenbreker</h1><p>'+bi('Beweeg je batje, kaats de bal terug en breek alle kleurrijke blokken!','Move your paddle, bounce the ball and break all the colorful bricks!')+'</p>'+
   '<div class="arcade-v3-score"><span id="brick-score">🧱 0 / 18</span><span id="brick-lives">❤️❤️❤️❤️</span></div>'+
   '<div class="arcade-v3-screen"><canvas id="brick-canvas" width="480" height="340" aria-label="Arcadespel met bal, batje en blokken"></canvas><div class="arcade-v3-finish" id="brick-finish" hidden></div></div>'+
   '<div class="arcade-v3-controls"><button data-brick="left">◀</button><button data-brick="start" class="shoot">🏓 START / BAL</button><button data-brick="right">▶</button></div>'+
-  '<p class="arcade-v3-instruction">Schuif je vinger over het speelveld of houd ◀ ▶ ingedrukt. Breek 18 blokken!</p>'+
+  '<p class="arcade-v3-instruction">'+bi('Schuif je vinger over het speelveld of houd ◀ ▶ ingedrukt. Breek 18 blokken!','Slide your finger across the game or hold ◀ ▶. Break all 18 bricks!')+'</p>'+
   '<button id="brick-exit" class="btn outline">← Naar het dictee</button></section></main>';
   const c=root.querySelector('#brick-canvas');g.ctx=c.getContext('2d');g.ctx.imageSmoothingEnabled=false;
   const quit=()=>{const cb=g?.back;stop();cb?.()};
