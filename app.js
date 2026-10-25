@@ -16,7 +16,10 @@ let data=load();
 const worldProgress=window.RekenWorldProgress;
 if(worldProgress){worldProgress.remember(data);save();}
 const bi=(nl,en)=>window.RekenTaal?window.RekenTaal.pair(nl,en):htmlSafe(nl);
-let state={screen:'home',session:null,answer:null,sort:[],installed:window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true};
+let pendingWorld='';
+try{pendingWorld=sessionStorage.getItem('rekenreis-next-world')||''}catch(e){}
+let state={screen:pendingWorld?'home':'landing',session:null,answer:null,sort:[],installed:window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true};
+let lastView='';
 let installPrompt=null;
 const random=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
 const pick=a=>a[random(0,a.length-1)];
@@ -45,6 +48,7 @@ function header(){
 }
 function render(){
  let body='';
+ if(state.screen==='landing')body=landing();
  if(state.screen==='home')body=home();
  if(state.screen==='game')body=game();
  if(state.screen==='feedback')body=feedback();
@@ -55,15 +59,35 @@ function render(){
  connect('logo',()=>goHome());
  connect('parents',()=>{state.screen='dashboard';render()});
  connect('sound',()=>{data.sound=!data.sound;save();tone(true);render()});
+ if(state.screen==='landing')bindLanding();
  if(state.screen==='home')bindHome();
  if(state.screen==='game')bindGame();
  if(state.screen==='feedback')connect('next',advance);
  if(state.screen==='summary')bindSummary();
  if(state.screen==='dashboard')bindDashboard();
  if(state.screen==='install')connect('install-now',installNow);
+ const view=state.screen+'|'+(state.session?.idx??'');
+ if(view!==lastView){lastView=view;window.RekenNavigation?.top()}
 }
 function connect(id,callback){let x=document.getElementById(id);if(x)x.addEventListener('click',callback)}
-function goHome(){if(state.screen==='game'&&state.session&&!confirm('Wil je stoppen met deze oefenronde?'))return;state.screen='home';state.session=null;state.sort=[];render()}
+function goHome(){if(state.screen==='game'&&state.session&&!confirm('Wil je stoppen met deze oefenronde?'))return;state.screen='landing';state.session=null;state.sort=[];render()}
+function mathHome(){state.screen='home';state.session=null;state.sort=[];render()}
+function landing(){
+ const count=window.RekenPetCore?.snapshot().coins??0;
+ return '<section class="home3-hero"><div class="home3-sun">✨ 🎒 ✨</div><h1>Hoi '+htmlSafe(data.name)+'! Wat gaan we vandaag doen?</h1>'+
+ '<p>'+bi('Kies een avontuur. Oefen, verdien muntjes en speel daarna een echt retrospel.','Choose an adventure. Practice, earn coins and unlock an arcade game afterward.')+'</p>'+
+ '<div class="home3-wallet">🪙 '+count+' muntjes voor je huisdier</div></section>'+
+ '<div class="home3-grid">'+
+ '<button class="home3-card home3-math" id="hub-math"><span class="home3-emoji">🧮</span><strong>Wiskunde</strong><span>'+bi('5 rekenwerelden + gemengde toets','5 math worlds + a mixed assessment')+'</span><b>▶ Start rekenen</b></button>'+
+ '<button class="home3-card home3-dictee" id="hub-dictee"><span class="home3-emoji">🎧</span><strong>Dictee</strong><span>'+bi('8 woordpakketten + gemengd dictee','8 spelling packs + a mixed assessment')+'</span><b>▶ Start dictee</b></button>'+
+ '<button class="home3-card home3-pet" id="hub-pet"><span class="home3-emoji">🐾</span><strong>Mijn huisdier</strong><span>'+bi('Eten, wassen, dansen, aankleden en spelen','Feed, wash, dance, dress up and play')+'</span><b>▶ Naar het huisje</b></button>'+
+ '</div><p class="home3-foot">'+bi('Na elke afgeronde oefenronde: 25 extra muntjes en keuze uit drie arcadespellen.','After every finished practice round: 25 bonus coins and your choice of three arcade games.')+'</p>';
+}
+function bindLanding(){
+ connect('hub-math',mathHome);
+ connect('hub-dictee',()=>window.RekenDictee?.open({onBack:()=>{state.screen='landing';lastView='';render()}}));
+ connect('hub-pet',()=>window.RekenPet?.open('home'));
+}
 function totalPlayed(){return data.sessions.reduce((n,s)=>n+s.total,0)}
 function home(){
  const count=data.sessions.length;
@@ -79,8 +103,10 @@ function home(){
  const total=data.history.length,correct=data.history.filter(x=>x.correct).length,pct=total?Math.round(correct/total*100):0;
  return '<section class="hero"><div class="copy"><div class="eyebrow">🌈 Welkom in het getallenrijk</div><h1>Hoi '+htmlSafe(data.name)+'! Klaar voor een rekenavontuur?</h1>'+
  '<p>'+bi('Ontdek vijf leuke werelden, verzamel sterren en word een echte getallenheld!','Discover five fun worlds, collect stars and become a real number hero!')+'</p>'+button('start-exam','🎯 Start de oefentoets','primary')+'</div><div class="mascot" role="img" aria-label="Vrolijk vosje">🦊</div></section>'+
- '<div class="section-heading"><h2>🗺️ Kies jouw wereld</h2><span class="muted">🏅 '+completed.length+'/5 voltooid</span></div>'+
+ '<div class="section-heading"><h2>🧮 Wiskunde · Kies jouw wereld</h2><span class="muted">🏅 '+completed.length+'/5 voltooid</span></div>'+
  '<p class="hint">'+(next.length?'Een wereld met 10/10 krijgt een medaille en gaat op slot. Kies dan een andere wereld!':'🎉 Alle vijf werelden zijn perfect! Je kunt blijven oefenen met de gemengde oefentoets en Dictee-eiland.')+'</p><section class="worlds">'+worlds+'</section>'+
+ '<section class="home3-mixed"><div class="home3-mixed-icon">🎯</div><div><h2>Gemengde toets · Alle 5 werelden</h2><p>'+bi('20 vragen: 4 uit elke rekenwereld. Je krijgt een totaalscore én een score per wereld.','20 questions: 4 from each math world. You get an overall score and a result for every world.')+'</p></div>'+button('math-mixed','🧠 Start gemengde toets','primary')+'</section>'+
+ '<div class="home3-nav-back">'+button('math-back','← Hoofdmenu','outline')+'</div>'+
  '<section class="bottom-panels"><div class="panel"><h3>🏆 Mijn avontuur</h3><p>Je hebt al '+totalPlayed()+' vragen gespeeld in '+count+' oefenrondes.</p>'+
  '<div class="progress-track"><div style="width:'+pct+'%"></div></div><p style="margin-top:9px">'+(total?pct+'% goed beantwoord':'Begin je eerste avontuur!')+'</p>'+button('weak-practice','🪄 Oefen wat lastig is','outline')+'</div>'+
  '<div class="panel"><h3>📲 Ook op je iPad!</h3><p>Zet Rekenreis op je beginscherm. Daarna kun je zelfs zonder internet spelen.</p>'+button('installation','📱 Zo installeer je de app','outline')+'</div></section>';
@@ -88,6 +114,8 @@ function home(){
 function bindHome(){
  document.querySelectorAll('[data-world]:not(:disabled)').forEach(el=>el.addEventListener('click',()=>start('practice',el.getAttribute('data-world'))));
  connect('start-exam',()=>start('exam'));
+ connect('math-mixed',()=>start('exam'));
+ connect('math-back',goHome);
  connect('weak-practice',()=>start('weak'));
  connect('installation',()=>{state.screen='install';render()});
 }
@@ -240,7 +268,7 @@ function advance(){
  const s=state.session;
  if(s.idx+1<s.questions.length){s.idx++;state.sort=[];state.answer=null;state.screen='game';render();return}
  let correct=s.results.filter(r=>r.correct).length,percent=Math.round(100*correct/s.questions.length);
- data.sessions.push({date:new Date().toISOString(),mode:s.mode,topic:s.topic||'mixed',total:s.questions.length,correct,percent});
+ data.sessions.push({date:new Date().toISOString(),mode:s.mode,topic:s.topic||'mixed',total:s.questions.length,correct,percent,bonusCoins:25});
  data.sessions=data.sessions.slice(-100);
  if(worldProgress)worldProgress.remember(data);
  save();state.screen='summary';render();
@@ -249,18 +277,33 @@ function summary(){
  const s=state.session,correct=s.results.filter(r=>r.correct).length,percent=Math.round(100*correct/s.results.length);
  let stars=percent>=90?'⭐⭐⭐':percent>=65?'⭐⭐':'⭐';
  let misses=s.results.filter(x=>!x.correct);
+ if(!s.arcadeGame)s.arcadeGame=window.RekenArcade?.next()||'invaders';
+ const isMixed=s.mode==='exam'||s.mode==='weak';
+ const breakdown=isMixed?'<div class="home3-breakdown"><h3>📊 Resultaat per wereld / Results by world</h3>'+TOPICS.filter(t=>s.results.some(x=>x.topic===t.id)).map(t=>{
+  const rows=s.results.filter(x=>x.topic===t.id),good=rows.filter(x=>x.correct).length;
+  return '<div class="home3-breakdown-line"><span>'+t.emoji+' '+t.name+'</span><strong>'+good+'/'+rows.length+'</strong></div>';
+ }).join('')+'</div>':'';
+ const petBalance=window.RekenPetCore?.snapshot().coins;
  const completed=s.mode==='practice'&&correct===10&&s.results.length===10;
  const nextWorld=worldProgress?worldProgress.remaining(data)[0]:null;
  return '<section class="game"><article class="question-card feedback">'+
  '<div class="feedback-icon">🏆</div><h2>Avontuur afgerond!</h2><div class="stars-big">'+stars+'</div>'+
  '<div class="summary-score">'+percent+'%</div>'+
  '<p>Je had <strong>'+correct+' van de '+s.results.length+'</strong> vragen goed. '+(percent>=80?'Fantastisch gewerkt!':'Elke oefening maakt je sterker!')+'</p>'+
+ '<div class="home3-earned"><strong>🪙 +25 muntjes verdiend!</strong><span>'+bi('Goed geoefend! Je mag nu een retrospel spelen.','Well done! You earned pet coins and can play an arcade game now.')+'</span>'+(petBalance===undefined?'':'<small>🐾 '+petBalance+' muntjes in je huisje</small>')+'</div>'+
+ (window.RekenArcade?window.RekenArcade.offerHTML(s.arcadeGame):'<p>🎮 Het bonusspel wordt geladen…</p>')+
+ breakdown+
  '<div class="score-grid" style="width:100%"><div class="score-tile"><strong>'+correct+'</strong><small>Goed</small></div><div class="score-tile"><strong>'+misses.length+'</strong><small>Bijleren</small></div><div class="score-tile"><strong>+'+(correct*10)+'</strong><small>Sterren</small></div></div>'+
  (completed?'<div class="world-win-banner"><strong>🏅 10/10! Deze wereld is voltooid!</strong><p>Deze wereld gaat op slot. '+(nextWorld?'Kies nu een andere rekenwereld om verder te reizen!':'Alle vijf werelden zijn nu perfect uitgespeeld!')+'</p></div>':'')+
  (misses.length?'<div class="explain"><strong>💡 Dit kun je nog oefenen:</strong><p>'+htmlSafe([...new Set(misses.map(m=>topic(m.topic).name))].join(', '))+'.</p></div>':'<div class="explain">🎉 Alles goed! Jij bent een echte getallenkampioen!</div>')+
  '<div class="result-actions">'+button('redo',completed?(nextWorld?'🗺️ Volgende wereld →':'🎯 Gemengde oefentoets'):'🔁 Nog een rondje','violet')+button('dash-summary','📊 Mijn resultaten','outline')+button('home-summary','🏠 Startscherm','outline')+'</div></article></section>';
 }
 function bindSummary(){
+ document.querySelectorAll('[data-arcade-game]').forEach(el=>el.onclick=()=>{
+  window.RekenArcade?.open(el.dataset.arcadeGame,{name:data.name,
+   onBack:()=>{state.screen='summary';lastView='';render()}
+  });
+ });
  connect('redo',()=>{
    const s=state.session;
    if(s.mode==='practice'&&worldProgress&&worldProgress.isCompleted(data,s.topic)){
@@ -269,7 +312,7 @@ function bindSummary(){
    }else start(s.mode,s.topic);
  });
  connect('dash-summary',()=>{state.screen='dashboard';render()});
- connect('home-summary',()=>goHome());
+ connect('home-summary',mathHome);
 }
 function dashboard(){
  let total=data.history.length,correct=data.history.filter(x=>x.correct).length,pct=total?Math.round(correct/total*100):0;
@@ -314,6 +357,7 @@ function install(){
 function installNow(){if(installPrompt){installPrompt.prompt();installPrompt.userChoice.then(()=>{installPrompt=null;render()})}else alert('Op je iPad: open in Safari, tik op Delen en kies Zet op beginscherm.')}
 document.addEventListener('click',e=>{if(e.target&&e.target.id==='back-install')goHome();if(e.target&&e.target.id==='home-install')goHome()});
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e});
+window.RekenMath=Object.freeze({open:mathHome,landing:goHome});
 if('serviceWorker'in navigator && /^https?:$/.test(location.protocol))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 render();
 })();
