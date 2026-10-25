@@ -1,0 +1,34 @@
+/* Varied, real arcade reward selector and two new touch-first games. */
+.arcade-v3-offer{margin:19px auto;background:linear-gradient(135deg,#201f50,#474c87);border:4px solid #7c7ab4;border-radius:23px;padding:18px;color:#fff;box-shadow:0 10px 28px #2a2b6140}
+.arcade-v3-offer-title{font:900 clamp(19px,4vw,28px) ui-monospace,monospace;color:#ffe68a;text-shadow:2px 2px #6d4f9c}
+.arcade-v3-offer>p{color:#e6e7ff;line-height:1.45;font-size:14px}
+.arcade-v3-gamecards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:17px 0}
+.arcade-v3-gamecard{display:flex;align-items:center;flex-direction:column;gap:6px;text-align:center;border:3px solid #646eac;background:#343565;color:white;padding:16px 10px 13px;border-radius:18px;min-height:216px;touch-action:manipulation;box-shadow:0 5px 0 #171a44}
+.arcade-v3-gamecard:active{transform:translateY(4px);box-shadow:0 1px 0 #171a44}
+.arcade-v3-gamecard strong{font-size:clamp(13px,1.8vw,17px);color:#fff5b9}
+.arcade-v3-gamecard small{color:#b8bce2}
+.arcade-v3-gamecard>span:last-of-type{color:#e4e6f9;font-size:12px;line-height:1.35;flex:1}
+.arcade-v3-gamecard b{font-size:11px;color:#264d43;background:#b2f3d1;border-radius:10px;padding:7px 8px;margin-top:auto}
+.arcade-v3-game-icon{font-size:clamp(39px,5vw,56px);line-height:1.3;filter:drop-shadow(0 3px 0 #171841)}
+.arcade-v3-gamecard.arcade-v3-featured{border-color:#ffe58b;background:linear-gradient(125deg,#534898,#515fa0)}
+.arcade-v3-foot{margin-bottom:0;color:#d1d6fd!important}
+.arcade-v3-shell{max-width:790px}
+.arcade-v3-panel{border:4px solid #8584d2;border-radius:27px;background:linear-gradient(135deg,#242750,#38426e);padding:clamp(12px,3vw,24px);color:white;text-align:center}
+.arcade-v3-panel h1{font:900 clamp(22px,4.5vw,36px) ui-monospace,monospace;text-shadow:3px 3px #514477;color:#ffe88c;margin:6px 0}
+.arcade-v3-panel>p{font-size:14px;color:#dde4fa;line-height:1.5;max-width:600px;margin:9px auto}
+.arcade-v3-score{display:flex;justify-content:space-between;align-items:center;gap:9px;max-width:630px;margin:14px auto;font:900 clamp(16px,2.8vw,21px) ui-monospace,monospace}
+.arcade-v3-screen{position:relative;max-width:650px;border:6px solid #9eabed;border-radius:13px;margin:0 auto;overflow:hidden;background:#0e152f}
+.arcade-v3-screen canvas{width:100%;height:auto;display:block;image-rendering:pixelated;touch-action:none}
+.arcade-v3-finish{position:absolute;inset:0;z-index:8;background:#141630ee;display:flex;align-items:center;justify-content:center;gap:10px;flex-direction:column;padding:16px;text-align:center}
+.arcade-v3-finish[hidden]{display:none}
+.arcade-v3-finish h2{font:900 clamp(19px,4vw,29px) ui-monospace,monospace;color:#ffe38b;margin:5px}
+.arcade-v3-finish p{color:#e8e8fc;font-size:16px;line-height:1.4}
+.arcade-v3-trophy{font-size:clamp(58px,12vw,89px)}
+.arcade-v3-finish .btn{min-height:47px}
+.arcade-v3-controls{max-width:520px;margin:17px auto;display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:11px}
+.arcade-v3-controls button{border:3px solid #fff2cd;border-radius:19px;background:#f9dd92;color:#554379;min-height:74px;box-shadow:0 5px 0 #9888a4;font-size:clamp(21px,4vw,28px);font-weight:950;touch-action:none;user-select:none;-webkit-user-select:none}
+.arcade-v3-controls button.shoot{background:#a8f1d0;border-color:#d8ffed;box-shadow:0 5px 0 #559d7a;font-size:clamp(14px,3vw,21px)}
+.arcade-v3-controls button:active{box-shadow:0 1px 0 #9888a4;transform:translateY(4px)}
+.arcade-v3-instruction{font-size:13px!important;color:#e1e4f9!important;max-width:540px!important}
+.arcade-v3-panel>.btn.outline{background:#f6f1ff}
+@media(max-width:600px){.arcade-v3-gamecards{grid-template-columns:1fr;gap:9px}.arcade-v3-gamecard{min-height:100px;display:grid;grid-template-columns:60px 1fr;text-align:left;align-items:center;gap:2px 10px}.arcade-v3-game-icon{grid-row:span 4;font-size:43px}.arcade-v3-gamecard strong{font-size:16px}.arcade-v3-gamecard b{grid-column:2;margin-top:4px;justify-self:start}.arcade-v3-gamecard>span:last-of-type{font-size:12px}.arcade-v3-controls{gap:7px}.arcade-v3-controls button{min-height:65px}.arcade-v3-panel{padding:11px}.arcade-v3-finish .btn{font-size:13px}}
