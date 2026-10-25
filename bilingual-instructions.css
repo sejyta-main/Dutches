@@ -15,3 +15,9 @@ h2 .reken-taal-en{font-size:.53em;font-weight:600;line-height:1.45;color:#7683a2
 .reken-inline-help{display:block;font-size:13px;line-height:1.4;color:#697795;margin:5px 0 10px}
 .reken-inline-help strong{color:#3c4273}
 @media(max-width:600px){.reken-taal-en{font-size:.83em}h2 .reken-taal-en{font-size:.58em}.reken-instruction-pair .reken-taal-nl{font-size:16px}}
+
+/* English support text stays readable on the dark arcade boards. */
+.arcade-v3-panel .reken-taal-en,.arcade-v3-offer .reken-taal-en,.forest-shell .reken-taal-en{color:#dbe4ff;font-weight:550}
+.arcade-v3-gamecard .reken-taal-en{color:#d1d8ff;font-size:12px}
+.pet-scene .reken-taal-en,.studio-card .reken-taal-en{color:#687898}
+.dict2-bonus-celebrate .reken-taal-en{color:#5c6694}
