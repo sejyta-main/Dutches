@@ -52,7 +52,14 @@
   const m=json(MATH),d=json(DICT),history=Array.isArray(m.history)?m.history:[],dict=Array.isArray(d.history)?d.history:[];
   const mathCorrect=history.filter(x=>x.correct).length,dictCorrect=dict.filter(x=>x.correct).length;
   const xp=history.reduce((n,x)=>n+(x.correct?12:4),0)+dict.reduce((n,x)=>n+(x.correct?10:3),0);
-  return {xp,mathCorrect,dictCorrect,earned:60+5*mathCorrect+7*dictCorrect,mathSessions:Array.isArray(m.sessions)?m.sessions:[]};
+  const mathSessions=Array.isArray(m.sessions)?m.sessions:[];
+  const dictSessions=Array.isArray(d.sessions)?d.sessions:[];
+  // Each newly completed practice round earns 25 additional coins, once per saved round.
+  // Old sessions have no bonusCoins and are not retroactively inflated.
+  const completedBonus=[...mathSessions,...dictSessions].reduce((sum,record)=>
+    sum+(record&&Number(record.total)>0?cap(record.bonusCoins,0,25):0),0);
+  return {xp,mathCorrect,dictCorrect,earned:60+5*mathCorrect+7*dictCorrect+completedBonus,
+    completionBonus:completedBonus,mathSessions};
  }
  function levels(xp){const thresholds=[0,100,240,420,650,950,1300,1740,2250,2850,3550,4350];let level=1;
   thresholds.forEach((t,i)=>{if(xp>=t)level=i+1});
