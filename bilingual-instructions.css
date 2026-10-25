@@ -1,0 +1,17 @@
+/* Classroom language order: Dutch always first, English explanation second. */
+.reken-taal{display:inline-flex;flex-direction:column;align-items:stretch;gap:3px;max-width:100%;vertical-align:middle;text-align:inherit}
+.reken-taal-nl{display:block;font-weight:inherit;color:inherit;line-height:1.36;white-space:normal}
+.reken-taal-en{display:block;font-size:.72em;font-weight:550;line-height:1.4;color:#6b7393;letter-spacing:0;white-space:normal}
+h2 .reken-taal-en{font-size:.53em;font-weight:600;line-height:1.45;color:#7683a2;margin-top:5px}
+.hint .reken-taal-en{font-size:.88em;color:#68799c}
+.reken-help-pair,.reken-instruction-pair{margin:10px 0;line-height:1.45}
+.reken-instruction-pair>.reken-taal{display:flex}
+.reken-instruction-pair .reken-taal-nl{font-size:17px;font-weight:700}
+.reken-instruction-pair .reken-taal-en{font-size:14px;color:#727d9e}
+.reken-rule-bilingual{background:#f7f7ff;border-left:4px solid #9f8be8;padding:13px;border-radius:12px;margin:12px 0}
+.reken-rule-bilingual .reken-taal{display:flex}
+.reken-rule-bilingual .reken-taal-nl{font-size:16px;font-weight:750}
+.reken-rule-bilingual .reken-taal-en{font-size:13px;line-height:1.5}
+.reken-inline-help{display:block;font-size:13px;line-height:1.4;color:#697795;margin:5px 0 10px}
+.reken-inline-help strong{color:#3c4273}
+@media(max-width:600px){.reken-taal-en{font-size:.83em}h2 .reken-taal-en{font-size:.58em}.reken-instruction-pair .reken-taal-nl{font-size:16px}}
