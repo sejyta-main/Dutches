@@ -1,5 +1,6 @@
 'use strict';
 (function(){
+ const bi=(nl,en)=>window.RekenTaal?window.RekenTaal.pair(nl,en):nl;
 const root=document.getElementById('app'),core=window.RekenPetCore;
 let tab='home',filter='alles',notice='',animalMenu=false,reaction='🐾 Aai mij of speel met mij!';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -28,10 +29,10 @@ function home(s){
  return '<div class="pet-layout"><div class="pet-big-card">'+scene(s)+
  '<div class="pet-stats">'+stat('Blij',p.mood,'💗','#f47ca0')+stat('Energie',p.energy,'⚡','#f1c350')+stat('Proper',p.clean,'🫧','#5bcadf')+'</div>'+
  '<div class="pet-actions">'+btn('pet-feed','🥕 Eten geven','outline')+btn('pet-play','🎮 Op avontuur!','green')+btn('pet-wash','🛁 Wassen','outline')+btn('pet-rest','💤 Slapen','outline')+btn('pet-dance','💃 Samen dansen!','outline')+'</div>'+
- '<p class="pet-care-note">👆 Aai je vriendje of ga samen op avontuur. Eten, wassen, dansen en slapen zie je écht gebeuren!</p></div>'+
+ '<p class="pet-care-note">'+bi('👆 Aai je vriendje of ga samen op avontuur. Eten, wassen, dansen en slapen zie je écht gebeuren!','Pet your friend or go on an adventure together. Watch your pet eat, bathe, dance and sleep!')+'</p></div>'+
  '<div class="pet-side"><div class="pet-card"><div class="pet-card-head"><span>🐾 Mijn vriendje</span><span>💖</span></div>'+
  '<label class="pet-label" for="pet-name">Hoe heet je vriendje?</label><div class="pet-rename-row"><input id="pet-name" maxlength="16" value="'+esc(p.name)+'" placeholder="Naam van je dier">'+btn('pet-rename','Bewaar','outline')+'</div>'+
- '<p class="pet-note">Kies je lievelingsdier. Je kunt altijd veranderen.</p><div class="pet-animals">'+core.pets.map(x=>'<button class="pet-animal '+(p.pet===x.id?'chosen':'')+'" data-animal="'+x.id+'" aria-label="'+x.name+'" aria-pressed="'+(p.pet===x.id)+'">'+x.icon+'<small>'+x.name+'</small></button>').join('')+'</div></div>'+
+ '<p class="pet-note">'+bi('Kies je lievelingsdier. Je kunt altijd veranderen.','Choose your favorite animal. You can change it anytime.')+'</p><div class="pet-animals">'+core.pets.map(x=>'<button class="pet-animal '+(p.pet===x.id?'chosen':'')+'" data-animal="'+x.id+'" aria-label="'+x.name+'" aria-pressed="'+(p.pet===x.id)+'">'+x.icon+'<small>'+x.name+'</small></button>').join('')+'</div></div>'+
  '<div class="pet-card"><h3>🪙 Muntjes verdienen</h3><p>Elke juiste rekenvraag geeft <b>5 muntjes</b>. Een juist dicteewoord geeft <b>7 muntjes</b>.</p>'+
  '<div class="pet-promo"><span>🛍️</span><div>In het winkeltje kun je kleding, meubels en kamers kopen!</div></div>'+btn('pet-shop-now','🛍️ Naar het winkeltje','violet')+'</div>'+
  '<div class="pet-card"><h3>🎒 Mijn avonturen</h3><p>Hoe meer je oefent, hoe hoger je niveau en hoe meer werelden open gaan.</p>'+btn('pet-map-now','🗺️ Open de avonturenkaart','outline')+'</div></div></div>';
@@ -54,7 +55,7 @@ function shop(s){
 function closet(s){
  const owned=core.catalog.filter(i=>s.pet.owned.includes(i.id));
  return '<div class="pet-layout"><div class="pet-big-card">'+scene(s)+'</div><div class="pet-card"><h2>👗 Mijn kleerkast</h2>'+
- '<p>Tik op een voorwerp om het aan te doen, in de kamer te zetten of weer weg te halen.</p>'+
+ '<p>'+bi('Tik op een voorwerp om het aan te doen, in de kamer te zetten of weer weg te halen.','Tap an item to wear it, place it in the room or remove it.')+'</p>'+
  (owned.length?'<div class="pet-inventory">'+owned.map(i=>{
  const using=i.category==='furniture'?s.pet.placed.includes(i.id):s.pet.equip[i.category]===i.id;
  return '<button class="pet-owned '+(using?'wearing':'')+'" data-wear="'+i.id+'"><span>'+i.icon+'</span><strong>'+esc(i.name)+'</strong><small>'+(using?'✓ In gebruik':'Gebruik')+'</small></button>';
