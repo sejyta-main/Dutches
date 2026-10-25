@@ -9,7 +9,7 @@
   {id:'breakout',icon:'🧱',name:'Blokkenbreker',desc:'Kaats een bal met je batje en breek 18 blokken.',style:'Atari klassieker'},
   {id:'forest',icon:'🌲',name:'Pixel Bosavontuur',desc:'Ren en spring over boomstammen naar het geheime kasteel.',style:'Game Boy platform'}
  ];
- function read(){try{const n=Number(localStorage.getItem(KEY));return Number.isFinite(n)&&n>=0?Math.floor(n):0}catch(e){return 0}}
+ function read(){try{const raw=localStorage.getItem(KEY);if(raw===null)return fallback;const n=Number(raw);return Number.isFinite(n)&&n>=0?Math.floor(n):fallback}catch(e){return fallback}}
  let fallback=0;
  function index(){try{return read()}catch(e){return fallback}}
  function peek(){return GAMES[index()%GAMES.length].id}
