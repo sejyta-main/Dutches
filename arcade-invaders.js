@@ -13,7 +13,7 @@
    ship:W/2,keys:{left:false,right:false,fire:false},shots:[],enemyShots:[],enemies:[],sparks:[],
    wave:0,dir:1,levelTime:0,fireCooldown:0,enemyCooldown:1.5,kills:0,lives:4,freeze:0,finished:false,won:false,awarded:false};
   for(let r=0;r<2;r++)for(let c=0;c<6;c++)g.enemies.push({x:60+c*66,y:63+r*38,alive:true,glow:r%2});
-  render();prev=0;raf=requestAnimationFrame(loop);
+  render();window.RekenNavigation?.top();prev=0;raf=requestAnimationFrame(loop);
  }
  function render(){
   root.innerHTML='<main class="shell arcade-v3-shell"><header class="topbar"><button id="inv-back" class="logo"><span class="logo-badge">👾</span><span><strong>Rekenreis Arcade</strong><small>Pixel Ruimtemissie</small></span></button><span class="pill star">🎮 LEVEL 1</span></header>'+
