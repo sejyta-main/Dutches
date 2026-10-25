@@ -13,7 +13,7 @@
   game={name:config.name||'Rekenheld',pet:pets[config.pet]||'🦊',onBack:config.onBack||(()=>location.reload()),onComplete:config.onComplete||(()=>{}),
    mode:config.mode||'bonus',x:35,y:GROUND-35,vx:0,vy:0,life:3,stars:new Set(),time:0,camera:0,grounded:true,hurt:0,done:false,win:false,
    buttons:{left:false,right:false,jump:false},particles:[],checkpoint:30};
-  render();prev=0;raf=requestAnimationFrame(loop);
+  render();window.RekenNavigation?.top();prev=0;raf=requestAnimationFrame(loop);
  }
  function render(){
   const g=game;if(!g)return;
