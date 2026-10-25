@@ -47,6 +47,10 @@ jobs:
           node --check dictee.js
           node --check woordpakketten.js
           node --check dictee-v2.js
+          node --check arcade-invaders.js
+          node --check arcade-breakout.js
+          node --check arcade-hub.js
+          node arcade-v3.test.cjs
           node --check retro-game.js
           node dictee-v2.test.cjs
           node --check memory-game.js
@@ -78,7 +82,7 @@ jobs:
       - name: Collect static web app
         run: |
           mkdir -p _site/icons _site/audio/nl-BE
-          cp index.html voice-engine.js spelling-coach.js pet-studio.js forest-game.js letterblaster.js world-progress.js app.js pet-play.js dictee.js woordpakketten.js dictee-v2.js retro-game.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js install-mobile.js style.css adventures.css rewards.css pet-world.css pet-home-install.css dictee-v2.css interactive-pet.css pet-studio.css forest-game.css games-coach.css sw.js manifest.webmanifest _site/
+          cp index.html arcade-invaders.js arcade-breakout.js arcade-hub.js spelling-coach.js pet-studio.js forest-game.js letterblaster.js world-progress.js app.js pet-play.js dictee.js woordpakketten.js dictee-v2.js retro-game.js memory-game.js activities.js rewards.js pet-core.js pet-world.js pet-entry.js install-mobile.js style.css adventures.css rewards.css pet-world.css pet-home-install.css dictee-v2.css interactive-pet.css pet-studio.css forest-game.css games-coach.css arcade-v3.css sw.js manifest.webmanifest _site/
           cp icons/icon.svg icons/icon-192.png icons/icon-512.png icons/apple-touch-icon.png _site/icons/
           if test -d _audio_cache; then find _audio_cache -maxdepth 1 -type f \( -name '*.mp3' -o -name 'manifest.json' \) -exec cp {} _site/audio/nl-BE/ \;; fi
           touch _site/.nojekyll
