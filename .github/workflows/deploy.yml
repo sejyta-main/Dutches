@@ -37,6 +37,7 @@ jobs:
           node --check world-progress.js
           node --check bilingual-instructions.js
           node bilingual-instructions.test.cjs
+          node home-menus.test.cjs
           node --check navigation.js
           node --check app.js
           node --check voice-engine.js
