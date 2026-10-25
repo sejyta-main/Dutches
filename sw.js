@@ -1,5 +1,5 @@
 /* Rekenreis offline cache. Online-first for app code prevents old iPad versions. */
-const CACHE = 'rekenreis-v13-dutch-first-bilingual';
+const CACHE = 'rekenreis-v14-nl-en-20261025';
 const APP = [
   './', './index.html', './style.css', './adventures.css',
   './rewards.css', './pet-world.css', './pet-home-install.css',
