@@ -1,5 +1,5 @@
 /* Rekenreis offline cache. Online-first for app code prevents old iPad versions. */
-const CACHE = 'rekenreis-v15-three-menus-rewards-20261025';
+const CACHE = 'rekenreis-v16-three-menus-arcade-top';
 const APP = [
   './', './index.html', './style.css', './adventures.css',
   './rewards.css', './pet-world.css', './pet-home-install.css',
