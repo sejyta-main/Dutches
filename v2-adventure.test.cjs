@@ -20,7 +20,7 @@ assert.match(voiceCode,/speechSynthesis/,'Offline device fallback');
 const dictCode=fs.readFileSync('dictee-v2.js','utf8');
 assert.match(dictCode,/dict2-chunks/,'Chunked speaking UI');
 assert.match(dictCode,/dict2-retry-form/,'Second spelling attempt UI');
-assert.match(dictCode,/RekenLetterblaster.open/,'Retro spelling reward');
+assert.match(dictCode,/RekenArcade\.open|arcade\.open\(/,'Multiple playable arcade spelling rewards');
 const studio=fs.readFileSync('pet-studio.js','utf8');
 assert.match(studio,/studio-scrub/);
 assert.match(studio,/studio-feed/);
