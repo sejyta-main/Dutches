@@ -41,14 +41,15 @@ function shell(inner){
  bind('dict2-back-home',leave);
 }
 function leave(){closeVoice();session=null;page='menu';returnHome()}
-function show(){if(page==='menu')menu();if(page==='study')study();if(page==='play')play();if(page==='answer')answerScreen();if(page==='finish')finish();if(page==='report')report()}
+function show(){if(page==='menu')menu();if(page==='study')study();if(page==='play')play();if(page==='answer')answerScreen();if(page==='finish')finish();if(page==='bonus')bonusPage();if(page==='report')report()}
 function open(config={}){
  returnHome=typeof config.onBack==='function'?config.onBack:()=>location.reload();
  const p=Number(config.pack);if(p>=1&&p<=8)pack=p;
  page=config.page==='report'?'report':'menu';session=null;last=null;show();
 }
+function completedBonus(){return (saved.sessions||[]).slice().reverse().find(r=>Number(r.total)>=10)||null}
 function menu(){
- const p=book.getPack(pack),attempts=(saved.history||[]).length;
+ const p=book.getPack(pack),attempts=(saved.history||[]).length,lastBonus=completedBonus();
  shell('<section class="dict-hero"><div><div class="eyebrow">🎓 Klaar voor de spellingtoets?</div><h1>🎧 Dictee-eiland</h1>'+
  '<p>Oefen alle acht woordpakketten. Luister, schrijf en leer op jouw tempo!</p>'+
  '<span class="dict-chip">8 woordpakketten</span><span class="dict-chip">160 woorden</span><span class="dict-chip">🎮 3 echte retrogames</span></div><div class="dict-hero-art">🦊✏️</div></section>'+
@@ -66,12 +67,14 @@ function menu(){
  button('dict2-learn','📖 Leren & uitleg','outline')+button('dict2-errors','💪 Mijn foutjes','outline')+'</div>'+
  '<div class="dict2-mega"><div><strong>🏆 Groot proefdictee</strong><p>40 vragen: vijf woorden uit elk pakket, zoals bij een examen.</p></div>'+
  button('dict2-exam','🎯 Start proefdictee','primary')+'</div>'+
+ (lastBonus?'<div class="dict2-claimed-bonus"><strong>🎮 Je arcadebonus wacht op je!</strong><p>Je voltooide een dictee met '+lastBonus.correct+' van '+lastBonus.total+' woorden juist. Speel je verdiende bonus zonder het dictee opnieuw te doen.</p>'+button('dict2-past-bonus','🕹️ Speel mijn verdiende bonus','primary')+'</div>':'')+
  '<div class="result-actions">'+button('dict2-report','📊 Resultaten','outline')+button('dict2-exit','🏠 Rekenreis','outline')+'</div>'+
  '<p class="privacy">'+attempts+' antwoorden geregistreerd • De resultaten van Woordpakket 7 blijven behouden. Je hoort de volledige woordgroep, maar je mag ook alleen het gevraagde woord typen.</p></article>');
  app.querySelectorAll('[data-pack]').forEach(b=>b.onclick=()=>{pack=Number(b.dataset.pack);show()});
  bind('dict2-10',()=>begin('short'));bind('dict2-20',()=>begin('full'));
  bind('dict2-errors',()=>begin('wrong'));bind('dict2-exam',()=>begin('exam'));
  bind('dict2-learn',()=>{page='study';show()});
+ bind('dict2-past-bonus',()=>{page='bonus';show()});
  bind('dict2-report',()=>{page='report';show()});bind('dict2-exit',leave);
 }
 function begin(mode){
@@ -179,14 +182,37 @@ function arcade(id){
 function finish(){
  const correct=session.results.filter(r=>r.correct).length,total=session.results.length,pct=Math.round(correct/total*100),wrongs=session.results.filter(x=>!x.correct);
  if(!session.arcadeGame)session.arcadeGame=window.RekenArcade?.next()||'invaders';
+ const showBonus=total>=10&&!session.bonusOfferSeen;
+ if(showBonus)session.bonusOfferSeen=true;
  shell('<section class="game"><article class="question-card feedback dict2-finish"><div class="feedback-icon">🏆</div>'+
  '<h2>Dictee afgerond!</h2><div class="summary-score">'+pct+'%</div>'+
- '<p>Je schreef <strong>'+correct+' van '+total+'</strong> woorden juist.</p><div class="stars-big">'+(pct===100?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐')+'</div>'+
+ '<p>Je schreef <strong>'+correct+' van '+total+'</strong> woorden juist.</p><div class="stars-big">'+(pct===100?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐')+'</div>'+button('dict2-arcade-now','🎮 Speel je verdiende bonus!','primary')+
  (wrongs.length?'<div class="dict-definition"><strong>💪 Nog wat oefenen</strong><p>'+safe(wrongs.map(x=>x.word).join(', '))+'</p></div>':'<p>🎉 Alles juist, fantastisch!</p>')+
  (window.RekenArcade?window.RekenArcade.offerHTML(session.arcadeGame):'<p>🎮 Retrogames worden geladen...</p>')+
- '<div class="result-actions">'+button('dict2-retry','🔁 Opnieuw oefenen','outline')+button('dict2-done','📚 Woordpakketten','outline')+'</div></article></section>');
+ '<div class="result-actions">'+button('dict2-retry','🔁 Opnieuw oefenen','outline')+button('dict2-done','📚 Woordpakketten','outline')+'</div></article></section>'+
+ (showBonus?'<div id="dict2-bonus-overlay" class="dict2-bonus-overlay" role="dialog" aria-modal="true" aria-labelledby="dict2-bonus-title" tabindex="-1"><div class="dict2-bonus-celebrate"><span class="dict2-bonus-icon">🏆🎮</span><h2 id="dict2-bonus-title">WAUW! JE BONUSSPEL IS VRIJ!</h2><p class="dict2-bonus-score">'+correct+' / '+total+' GOED!</p><p>Je hebt alle '+total+' woorden geoefend. Ook met foutjes heb je je spel verdiend!</p><button type="button" class="btn primary" id="dict2-bonus-start">🕹️ SPEEL NU!</button><button type="button" class="btn outline" id="dict2-bonus-score">📊 Eerst mijn resultaten bekijken</button></div></div>':''));
+ bind('dict2-arcade-now',()=>arcade());
+ const bonusOverlay=app.querySelector('#dict2-bonus-overlay');
+ if(bonusOverlay){
+   bind('dict2-bonus-start',()=>arcade());
+   bind('dict2-bonus-score',()=>{bonusOverlay.remove();try{window.scrollTo(0,0)}catch(e){}});
+   bonusOverlay.focus();
+ }
  app.querySelectorAll('[data-arcade-game]').forEach(el=>el.onclick=()=>arcade(el.dataset.arcadeGame));
  bind('dict2-retry',()=>begin(session.mode));bind('dict2-done',()=>{session=null;page='menu';show()});
+}
+function bonusPage(){
+ const last=completedBonus();
+ if(!last){page='menu';show();return}
+ const bonusPack=Number(last.pack);
+ if(bonusPack>=1&&bonusPack<=8)pack=bonusPack;
+ const recommended=window.RekenArcade?.peek()||'invaders';
+ shell('<section class="game"><article class="question-card dict2-bonus-history"><div class="feedback-icon">🏆</div><h2>Je verdiende arcadebonus!</h2>'+
+ '<p>Je vorige dictee: <strong>'+last.correct+' van '+last.total+' juist</strong>. Je hoeft niet opnieuw te oefenen om je bonus te spelen.</p>'+
+ (window.RekenArcade?window.RekenArcade.offerHTML(recommended):'<p>De retrospellen zijn nog niet geladen. Ververs de app.</p>')+
+ '<div class="result-actions">'+button('dict2-bonus-back','← Terug naar de pakketten','outline')+'</div></article></section>');
+ app.querySelectorAll('[data-arcade-game]').forEach(el=>el.onclick=()=>arcade(el.dataset.arcadeGame));
+ bind('dict2-bonus-back',()=>{page='menu';show()});
 }
 function study(){
  const p=book.getPack(pack),marks=studies(pack),count=marks.size;
@@ -213,7 +239,7 @@ function study(){
  });
 }
 function report(){
- const total=saved.history.length,good=saved.history.filter(r=>r.correct).length;
+ const total=saved.history.length,good=saved.history.filter(r=>r.correct).length,lastBonus=completedBonus();
  shell('<section class="dashboard"><div class="game-head">'+button('dict2-report-back','← Woordpakketten','outline')+
  '<div class="game-label"><strong>📊 Dictee-resultaten</strong><small>Woordpakket 1–8</small></div></div>'+
  '<article class="question-card"><div class="score-grid"><div class="score-tile"><strong>'+total+'</strong><small>Antwoorden</small></div>'+
@@ -223,10 +249,11 @@ function report(){
   const r=packStats(p.number),n=studies(p.number).size;
   return '<button class="dict2-report-line" data-report-pack="'+p.number+'"><strong>'+p.icon+' Woordpakket '+p.number+'</strong>'+
   '<span>'+r.correct+'/'+r.total+' juist · '+r.pct+'% · '+n+'/20 geleerd</span></button>';
- }).join('')+'</div><div class="result-actions">'+button('dict2-csv','⬇️ Download CSV','violet')+
+ }).join('')+'</div>'+(lastBonus?'<div class="dict2-claimed-bonus"><strong>🎮 Bonus beschikbaar</strong><p>Laatste ronde: '+lastBonus.correct+'/'+lastBonus.total+' juist.</p>'+button('dict2-report-bonus','🕹️ Mijn bonus spelen','primary')+'</div>':'')+'<div class="result-actions">'+button('dict2-csv','⬇️ Download CSV','violet')+
  button('dict2-report-done','🏠 Startscherm','outline')+'</div>'+
  '<p class="privacy">Je oude resultaten van Woordpakket 7 zijn behouden. Alles blijft op dit toestel.</p></article></section>');
  bind('dict2-report-back',()=>{page='menu';show()});bind('dict2-report-done',leave);
+ bind('dict2-report-bonus',()=>{page='bonus';show()});
  app.querySelectorAll('[data-report-pack]').forEach(b=>b.onclick=()=>{pack=Number(b.dataset.reportPack);page='menu';show()});
  bind('dict2-csv',()=>{
   const rows=saved.history.map(r=>[r.date,reportPack(r),r.word,r.given,r.correct?'ja':'nee'].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(';'));
