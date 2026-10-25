@@ -7,6 +7,8 @@ const app=document.getElementById('app'),KEY='rekenreis-dictee-v1',STUDY='rekenr
 let saved=read(KEY,{history:[],sessions:[]}),checked=read(STUDY,{}),pack=1,page='menu',session=null,last=null,returnHome=()=>location.reload();
 let voice=null,voiceInfo='';
 const safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const bi=(nl,en)=>window.RekenTaal?window.RekenTaal.pair(nl,en):safe(nl);
+const englishPack=n=>window.RekenTaal?.packs[n]||{summary:'Learn this Dutch spelling rule.',tip:'Read the example carefully.'};
 const shuffle=xs=>{let a=xs.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const button=(id,label,style='violet')=>'<button type="button" class="btn '+style+'" id="'+id+'">'+label+'</button>';
 function read(key,fallback){try{const s=JSON.parse(localStorage.getItem(key)||'null');return s&&typeof s==='object'?s:fallback}catch(e){return fallback}}
@@ -51,7 +53,7 @@ function completedBonus(){return (saved.sessions||[]).slice().reverse().find(r=>
 function menu(){
  const p=book.getPack(pack),attempts=(saved.history||[]).length,lastBonus=completedBonus();
  shell('<section class="dict-hero"><div><div class="eyebrow">🎓 Klaar voor de spellingtoets?</div><h1>🎧 Dictee-eiland</h1>'+
- '<p>Oefen alle acht woordpakketten. Luister, schrijf en leer op jouw tempo!</p>'+
+ '<p>'+bi('Oefen alle acht woordpakketten. Luister, schrijf en leer op jouw tempo!','Practice all eight spelling packs. Listen, write and learn at your own pace!')+'</p>'+
  '<span class="dict-chip">8 woordpakketten</span><span class="dict-chip">160 woorden</span><span class="dict-chip">🎮 3 echte retrogames</span></div><div class="dict-hero-art">🦊✏️</div></section>'+
  '<div class="section-heading"><h2>📚 Kies jouw woordpakket</h2></div>'+
  '<div class="dict2-packs">'+book.packs.map(x=>{
@@ -62,7 +64,7 @@ function menu(){
   '<span class="dict2-progress"><span style="width:'+(stud*5)+'%"></span></span></button>';
  }).join('')+'</div>'+
  '<article class="panel dict2-action-panel"><h2>'+p.icon+' Woordpakket '+pack+': '+safe(p.title)+'</h2>'+
- '<p>'+safe(p.summary)+'</p><div class="tip">💡 '+safe(p.tip)+'</div>'+
+ '<p>'+bi(p.summary,englishPack(p.number).summary)+'</p><div class="tip">💡 '+bi(p.tip,englishPack(p.number).tip)+'</div>'+
  '<div class="dict2-modes">'+button('dict2-10','⚡ 10 woorden','violet')+button('dict2-20','✏️ Alle 20 woorden','green')+
  button('dict2-learn','📖 Leren & uitleg','outline')+button('dict2-errors','💪 Mijn foutjes','outline')+'</div>'+
  '<div class="dict2-mega"><div><strong>🏆 Groot proefdictee</strong><p>40 vragen: vijf woorden uit elk pakket, zoals bij een examen.</p></div>'+
@@ -97,13 +99,13 @@ function play(){
  '<div class="game-label"><strong>🎧 '+(session.mode==='exam'?'Proefdictee':'Woordpakket '+q.pack)+'</strong><small>Woord '+(session.idx+1)+' van '+session.questions.length+'</small></div>'+
  '<div class="counter">⭐ '+session.results.filter(r=>r.correct).length+'</div></div>'+
  '<div class="step-progress"><div style="width:'+(session.idx/session.questions.length*100)+'%"></div></div>'+
- '<article class="question-card dict2-question"><div class="question-eyebrow">'+p.icon+' Luister en schrijf</div><h2>Welk woord hoor je?</h2>'+
- '<p class="hint">Luister naar het woord en schrijf het juist.</p><div class="dict-listening"><div class="dict-speaker">🎧</div>'+
+ '<article class="question-card dict2-question"><div class="question-eyebrow">'+p.icon+' Luister en schrijf</div><h2>'+bi('Welk woord hoor je?','Which word do you hear?')+'</h2>'+
+ '<p class="hint">'+bi('Luister naar het woord en schrijf het juist.','Listen to the Dutch word and spell it correctly.')+'</p><div class="dict-listening"><div class="dict-speaker">🎧</div>'+
  '<div class="dict-audio-buttons">'+button('dict2-hear','🔊 Luister')+button('dict2-slow','🐢 Langzaam','outline')+button('dict2-chunks','🚂 In stukjes','outline')+'</div>'+
  '<p class="dict-note" id="dict2-voice" aria-live="polite">'+safe(voiceInfo)+'</p></div>'+
  '<form id="dict2-form"><label class="dict-label" for="dict2-write">✏️ Schrijf hier je antwoord</label>'+
  '<input id="dict2-write" class="dict-input" type="text" lang="nl-BE" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required maxlength="80" placeholder="Typ het woord…">'+
- '<p class="dict-note center">Je mag het woord of de hele uitdrukking schrijven.</p><div class="center"><button type="submit" class="btn green">✅ Controleer</button></div></form></article></section>');
+ '<p class="dict-note center">'+bi('Je mag het woord of de hele uitdrukking schrijven.','You may type just the word or the whole phrase.')+'</p><div class="center"><button type="submit" class="btn green">✅ Controleer</button></div></form></article></section>');
  bind('dict2-stop',()=>{if(confirm('Wil je stoppen met dit dictee?')){closeVoice();page='menu';session=null;show()}});
  bind('dict2-hear',()=>speak(q));bind('dict2-slow',()=>speak(q,true));bind('dict2-chunks',()=>speak(q,false,false,true));
  app.querySelector('#dict2-form').onsubmit=e=>{
@@ -138,10 +140,10 @@ function answerScreen(){
  (last.correct?'<p>Super! Jij hebt het goed geschreven.</p>':'<p>Bekijk even het juiste woord. Daar leer je van!</p><p>Je schreef: <strong>'+safe(last.typed)+'</strong></p>')+
  '<div class="dict-answer"><div class="dict-bigword">'+safe(w.word)+'</div><p>'+safe(w.phrase)+'</p></div>'+ (coach?coach.html:'')+
  '<div class="dict-definition"><strong>📖 Betekenis</strong><p>'+safe(w.meaning)+'</p><small>🇪🇸 '+safe(w.es)+'</small></div>'+
- '<div class="dict-definition"><strong>💬 Voorbeeldzin</strong><p>'+safe(w.example)+'</p></div>'+
+ '<div class="dict-definition"><strong>💬 Voorbeeldzin / Example sentence</strong><p>'+safe(w.example)+'</p></div>'+
  '<div class="result-actions">'+button('dict2-repeat','🔊 Hoor opnieuw','outline')+
  button('dict2-example','💬 Hoor voorbeeld','outline')+button('dict2-rule','🧠 Spellingregel','outline')+'</div>'+
- '<div id="dict2-rule-panel" class="dict-rulebox" hidden><strong>'+p.icon+' '+safe(p.title)+'</strong><p>'+safe(p.summary)+'</p><p>'+safe(specific(w))+'</p></div>'+
+ '<div id="dict2-rule-panel" class="dict-rulebox" hidden><strong>'+p.icon+' '+safe(p.title)+'</strong><p>'+bi(p.summary,englishPack(p.number).summary)+'</p><p>'+safe(specific(w))+'</p></div>'+
  (coach?'<form id="dict2-retry-form" class="coach-retry"><label for="dict2-retry-input">✏️ Probeer het woord zelf nog eens!</label>'+
  '<input id="dict2-retry-input" autocomplete="off" autocorrect="off" spellcheck="false" lang="nl-BE" required placeholder="Schrijf het juiste woord">'+
  '<button class="btn green" type="submit">✅ Opnieuw controleren</button><div id="dict2-retry-result" class="coach-retry-result" aria-live="polite"></div></form>':'')+
@@ -190,7 +192,7 @@ function finish(){
  (wrongs.length?'<div class="dict-definition"><strong>💪 Nog wat oefenen</strong><p>'+safe(wrongs.map(x=>x.word).join(', '))+'</p></div>':'<p>🎉 Alles juist, fantastisch!</p>')+
  (window.RekenArcade?window.RekenArcade.offerHTML(session.arcadeGame):'<p>🎮 Retrogames worden geladen...</p>')+
  '<div class="result-actions">'+button('dict2-retry','🔁 Opnieuw oefenen','outline')+button('dict2-done','📚 Woordpakketten','outline')+'</div></article></section>'+
- (showBonus?'<div id="dict2-bonus-overlay" class="dict2-bonus-overlay" role="dialog" aria-modal="true" aria-labelledby="dict2-bonus-title" tabindex="-1"><div class="dict2-bonus-celebrate"><span class="dict2-bonus-icon">🏆🎮</span><h2 id="dict2-bonus-title">WAUW! JE BONUSSPEL IS VRIJ!</h2><p class="dict2-bonus-score">'+correct+' / '+total+' GOED!</p><p>Je hebt alle '+total+' woorden geoefend. Ook met foutjes heb je je spel verdiend!</p><button type="button" class="btn primary" id="dict2-bonus-start">🕹️ SPEEL NU!</button><button type="button" class="btn outline" id="dict2-bonus-score">📊 Eerst mijn resultaten bekijken</button></div></div>':''));
+ (showBonus?'<div id="dict2-bonus-overlay" class="dict2-bonus-overlay" role="dialog" aria-modal="true" aria-labelledby="dict2-bonus-title" tabindex="-1"><div class="dict2-bonus-celebrate"><span class="dict2-bonus-icon">🏆🎮</span><h2 id="dict2-bonus-title">WAUW! JE BONUSSPEL IS VRIJ!</h2><p class="dict2-bonus-score">'+correct+' / '+total+' GOED!</p><p>'+bi('Je hebt alle '+total+' woorden geoefend. Ook met foutjes heb je je spel verdiend!','You practiced all '+total+' words. You earned a game even if you made mistakes!')+'</p><button type="button" class="btn primary" id="dict2-bonus-start">🕹️ SPEEL NU!</button><button type="button" class="btn outline" id="dict2-bonus-score">📊 Eerst mijn resultaten bekijken</button></div></div>':''));
  bind('dict2-arcade-now',()=>arcade());
  const bonusOverlay=app.querySelector('#dict2-bonus-overlay');
  if(bonusOverlay){
@@ -219,9 +221,9 @@ function study(){
  shell('<section class="game dict2-study"><div class="game-head">'+button('dict2-study-back','← Pakketten','outline')+
  '<div class="game-label"><strong>📖 Woordpakket '+pack+'</strong><small>Woorden lezen en oefenen</small></div>'+
  '<span class="counter">'+count+'/20 geleerd</span></div>'+
- '<article class="question-card"><div class="dict2-rule-summary"><h2>'+p.icon+' '+safe(p.title)+'</h2><p>'+safe(p.summary)+'</p>'+
- '<div class="tip">💡 '+safe(p.tip)+'</div><p><strong>Voorbeeld:</strong> '+safe(p.example)+'</p></div>'+
- '<p class="hint">Luister naar elk woord, lees wat het betekent en vink het aan als je het geoefend hebt.</p>'+
+ '<article class="question-card"><div class="dict2-rule-summary"><h2>'+p.icon+' '+safe(p.title)+'</h2><p>'+bi(p.summary,englishPack(p.number).summary)+'</p>'+
+ '<div class="tip">💡 '+bi(p.tip,englishPack(p.number).tip)+'</div><p><strong>Voorbeeld / Example:</strong> '+safe(p.example)+'</p></div>'+
+ '<p class="hint">'+bi('Luister naar elk woord, lees wat het betekent en vink het aan als je het geoefend hebt.','Listen to each word, read its meaning and mark it when you have practiced it.')+'</p>'+
  '<div class="dict2-study-list">'+p.words.map(w=>'<div class="dict2-study-item">'+
  '<button type="button" class="dict2-hear" data-hear="'+w.id+'" aria-label="Luister naar '+safe(w.word)+'">🔊</button>'+
  '<div class="dict2-study-copy"><strong>'+safe(w.phrase)+'</strong><small>🇪🇸 '+safe(w.es)+' • '+safe(w.meaning)+'</small><span>'+safe(w.example)+'</span></div>'+
