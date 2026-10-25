@@ -1,6 +1,7 @@
 'use strict';
 /* Original Game-Boy-inspired side-scrolling platform game; one short complete level. */
 (function(){
+ const bi=(nl,en)=>window.RekenTaal?window.RekenTaal.pair(nl,en):nl;
  const root=document.getElementById('app'),CW=480,CH=270,WORLD=1570,GROUND=218;
  const stones=[310,510,770,1010,1240],gems=[100,215,350,448,606,720,855,960,1112,1268,1380,1470];
  const pets={fox:'🦊',cat:'🐱',dog:'🐶',rabbit:'🐰'};
@@ -18,13 +19,13 @@
   const g=game;if(!g)return;
   root.innerHTML='<main class="shell forest-app"><header class="topbar"><button class="logo" id="forest-back"><span class="logo-badge">🎮</span><span><strong>Rekenreis</strong><small>Pixel Bosavontuur · retro level 1</small></span></button>'+
   '<span class="pill star" id="forest-status">💎 0/8 | ❤️❤️❤️</span></header>'+
-  '<section class="forest-shell"><div class="forest-intro"><h1>🌲 Pixel Bosavontuur</h1><p>Ren, spring over boomstammen en verzamel minstens 8 kristallen. Bereik daarna het gouden kasteel!</p></div>'+
+  '<section class="forest-shell"><div class="forest-intro"><h1>🌲 Pixel Bosavontuur</h1><p>'+bi('Ren, spring over boomstammen en verzamel minstens 8 kristallen. Bereik daarna het gouden kasteel!','Run, jump over logs and collect at least 8 crystals. Then reach the golden castle!')+'</p></div>'+
   '<div class="forest-screen"><canvas id="forest-canvas" width="480" height="270" aria-label="Zijwaarts scrollend bosspel"></canvas>'+
   '<div class="forest-overlay" id="forest-result" hidden></div></div>'+
   '<div class="forest-controls"><button class="forest-btn" data-control="left" aria-label="Links bewegen">◀</button>'+
   '<button class="forest-btn forest-jump" data-control="jump" aria-label="Springen">⬆ SPRING!</button>'+
   '<button class="forest-btn" data-control="right" aria-label="Rechts bewegen">▶</button></div>'+
-  '<div class="forest-note">Houd ◀ of ▶ ingedrukt en spring met ⬆. Je hebt 3 hartjes. Op computer: pijltjes en spatie.</div>'+
+  '<div class="forest-note">'+bi('Houd ◀ of ▶ ingedrukt en spring met ⬆. Je hebt 3 hartjes. Op computer: pijltjes en spatie.','Hold ◀ or ▶ to run and use ⬆ to jump. You have 3 hearts. On a computer, use arrow keys and Space.')+'</div>'+
   '<div class="result-actions"><button id="forest-quit" class="btn outline">🏠 Terug</button></div></section></main>';
   ctx=root.querySelector('#forest-canvas').getContext('2d');ctx.imageSmoothingEnabled=false;
   root.querySelector('#forest-back').onclick=()=>exit();root.querySelector('#forest-quit').onclick=()=>exit();
