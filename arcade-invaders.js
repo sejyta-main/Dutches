@@ -1,6 +1,7 @@
 'use strict';
 /* Original fixed-level arcade shooter inspired by 1980s cabinets; no copyrighted sprites. */
 (function(){
+ const bi=(nl,en)=>window.RekenTaal?window.RekenTaal.pair(nl,en):nl;
  const root=document.getElementById('app');
  const W=480,H=340;
  let g=null,raf=0,prev=0;
@@ -16,11 +17,11 @@
  }
  function render(){
   root.innerHTML='<main class="shell arcade-v3-shell"><header class="topbar"><button id="inv-back" class="logo"><span class="logo-badge">👾</span><span><strong>Rekenreis Arcade</strong><small>Pixel Ruimtemissie</small></span></button><span class="pill star">🎮 LEVEL 1</span></header>'+
-  '<section class="arcade-v3-panel"><h1>👾 Pixel Ruimtemissie</h1><p>Vlieg naar links en rechts, ontwijk laserstralen en versla de ruimtewezentjes!</p>'+
+  '<section class="arcade-v3-panel"><h1>👾 Pixel Ruimtemissie</h1><p>'+bi('Vlieg naar links en rechts, ontwijk laserstralen en versla de ruimtewezentjes!','Fly left and right, dodge lasers and defeat the space invaders!')+'</p>'+
   '<div class="arcade-v3-score"><span id="inv-score">⭐ 0 / 12</span><span id="inv-hearts">❤️❤️❤️❤️</span></div>'+
   '<div class="arcade-v3-screen"><canvas id="inv-canvas" width="480" height="340" aria-label="Ruimtearcade met raket, vijanden en lasers"></canvas><div class="arcade-v3-finish" id="inv-finish" hidden></div></div>'+
   '<div class="arcade-v3-controls"><button type="button" data-control="left">◀</button><button type="button" class="shoot" data-control="fire">🔴 VUUR!</button><button type="button" data-control="right">▶</button></div>'+
-  '<p class="arcade-v3-instruction">Houd de pijlen en VUUR ingedrukt. Computer: ← → en spatie.</p><button id="inv-exit" class="btn outline">← Naar het dictee</button></section></main>';
+  '<p class="arcade-v3-instruction">'+bi('Houd de pijlen en VUUR ingedrukt. Computer: ← → en spatie.','Hold the arrows and FIRE to play. On a computer, use ← → and Space.')+'</p><button id="inv-exit" class="btn outline">← Naar het dictee</button></section></main>';
   const canvas=root.querySelector('#inv-canvas'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;g.ctx=ctx;
   const quit=()=>{let cb=g?.back;stop();cb?.()};
   root.querySelector('#inv-back').onclick=quit;root.querySelector('#inv-exit').onclick=quit;
