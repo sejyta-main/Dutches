@@ -51,6 +51,7 @@ jobs:
           node --check arcade-breakout.js
           node --check arcade-hub.js
           node arcade-v3.test.cjs
+          node dictee-bonus.test.cjs
           node --check retro-game.js
           node dictee-v2.test.cjs
           node --check memory-game.js
