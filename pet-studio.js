@@ -1,6 +1,7 @@
 'use strict';
 /* Interactive cartoon pet: pet-specific SVG sprites and visual caregiving scenes. */
 (function(){
+ const bi=(nl,en)=>window.RekenTaal?window.RekenTaal.pair(nl,en):nl;
  const root=document.getElementById('app');
  const pets={
  fox:{fur:'#f19a47',light:'#fff1dc',edge:'#c77037',ears:'point'},
@@ -76,7 +77,7 @@
   if(!current)return;
   const s=current,a=s.action,night=a==='rest'&&s.progress>0,bathe=a==='wash'&&s.progress<5;
   root.innerHTML='<main class="shell studio-shell"><header class="topbar"><button class="logo" id="studio-back"><span class="logo-badge">🐾</span><strong>'+escaped(s.name)+'s huisje</strong></button><span class="pill star">'+info[a].emoji+' Interactief</span></header>'+
-  '<section class="studio-card"><h1>'+info[a].title+'</h1><p>'+info[a].help+'</p>'+
+  '<section class="studio-card"><h1>'+info[a].title+'</h1><p>'+bi(info[a].help,({food:'Choose a snack and feed your pet three bites.',wash:'Wash the muddy spots with a sponge, then rinse off the bubbles.',dance:'Follow the colorful arrows in the right order.',rest:'Turn off the light and let your pet dream.'})[a])+'</p>'+
   '<div class="studio-stage studio-'+a+' '+(night?'studio-night ':'')+(bathe?'studio-dirty ':'')+(s.done?'studio-done':'')+'">'+
   '<div class="studio-scene-top">'+(night?'🌟 🌙 ⭐':'☀️ ☁️ ☁️')+'</div><div class="studio-sprite '+(s.stage==='washdone'?'studio-bubbles':'')+'">'+sprite(s.pet,night?'sleep':'happy')+'</div>'+
   '<div class="studio-effects">'+(a==='food'?'🍏':a==='wash'?'🫧 🧼 🫧':a==='dance'?'🎵 🎼 🎵':'💤 Zzz')+'</div>'+
