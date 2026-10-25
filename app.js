@@ -15,6 +15,7 @@ const appRoot=document.getElementById('app');
 let data=load();
 const worldProgress=window.RekenWorldProgress;
 if(worldProgress){worldProgress.remember(data);save();}
+const bi=(nl,en)=>window.RekenTaal?window.RekenTaal.pair(nl,en):htmlSafe(nl);
 let state={screen:'home',session:null,answer:null,sort:[],installed:window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true};
 let installPrompt=null;
 const random=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
@@ -77,7 +78,7 @@ function home(){
  }).join('');
  const total=data.history.length,correct=data.history.filter(x=>x.correct).length,pct=total?Math.round(correct/total*100):0;
  return '<section class="hero"><div class="copy"><div class="eyebrow">🌈 Welkom in het getallenrijk</div><h1>Hoi '+htmlSafe(data.name)+'! Klaar voor een rekenavontuur?</h1>'+
- '<p>Ontdek vijf leuke werelden, verzamel sterren en word een echte getallenheld!</p>'+button('start-exam','🎯 Start de oefentoets','primary')+'</div><div class="mascot" role="img" aria-label="Vrolijk vosje">🦊</div></section>'+
+ '<p>'+bi('Ontdek vijf leuke werelden, verzamel sterren en word een echte getallenheld!','Discover five fun worlds, collect stars and become a real number hero!')+'</p>'+button('start-exam','🎯 Start de oefentoets','primary')+'</div><div class="mascot" role="img" aria-label="Vrolijk vosje">🦊</div></section>'+
  '<div class="section-heading"><h2>🗺️ Kies jouw wereld</h2><span class="muted">🏅 '+completed.length+'/5 voltooid</span></div>'+
  '<p class="hint">'+(next.length?'Een wereld met 10/10 krijgt een medaille en gaat op slot. Kies dan een andere wereld!':'🎉 Alle vijf werelden zijn perfect! Je kunt blijven oefenen met de gemengde oefentoets en Dictee-eiland.')+'</p><section class="worlds">'+worlds+'</section>'+
  '<section class="bottom-panels"><div class="panel"><h3>🏆 Mijn avontuur</h3><p>Je hebt al '+totalPlayed()+' vragen gespeeld in '+count+' oefenrondes.</p>'+
@@ -187,7 +188,7 @@ function game(){
  }
  return '<section class="game"><div class="game-head">'+button('back-game','← Terug','outline')+'<div class="game-label"><strong>'+currentTopic.emoji+' '+(s.mode==='exam'?'Oefentoets':s.mode==='weak'?'Extra oefenen':currentTopic.name)+'</strong><small>Vraag '+(s.idx+1)+' van '+s.questions.length+'</small></div><div class="counter">⭐ '+s.results.filter(r=>r.correct).length+' / '+s.idx+'</div></div>'+
  '<div class="step-progress"><div style="width:'+(s.idx/s.questions.length*100)+'%"></div></div>'+
- '<article class="question-card"><div class="question-eyebrow">✨ '+currentTopic.name+'</div><h2>'+htmlSafe(q.title)+'</h2><p class="hint">'+htmlSafe(q.subtitle)+'</p><div class="visual-area">'+visual(q)+'</div>'+result+'</article></section>';
+ '<article class="question-card"><div class="question-eyebrow">✨ '+currentTopic.name+'</div><h2>'+bi(q.title,window.RekenTaal?.math(q).title||'')+'</h2><p class="hint">'+bi(q.subtitle,window.RekenTaal?.math(q).subtitle||'')+'</p><div class="visual-area">'+visual(q)+'</div>'+result+'</article></section>';
 }
 function bindGame(){
  connect('back-game',goHome);
@@ -230,8 +231,8 @@ function feedback(){
  return '<section class="game"><article class="question-card feedback">'+
  '<div class="feedback-icon confetti">'+(a.correct?'🌟':'💡')+'</div>'+
  '<h2>'+(a.correct?'Supergoed gedaan!':'Dat geeft niet!')+'</h2>'+
- '<p>'+(a.correct?'Je verdient 10 sterren! Ga zo door, rekenheld!':'Van proberen word je slimmer. Bekijk het goede antwoord.')+'</p>'+
- '<div class="explain"><strong>'+(a.correct?'✅ Goed antwoord!':'✅ Het goede antwoord: '+htmlSafe(a.q.answer))+'</strong><p>'+htmlSafe(a.q.explain)+'</p></div>'+
+ '<p>'+bi(a.correct?'Je verdient 10 sterren! Ga zo door, rekenheld!':'Van proberen word je slimmer. Bekijk het goede antwoord.',a.correct?'You earned 10 stars! Keep going, number hero!':'Every try makes you smarter. Look at the correct answer.')+'</p>'+
+ '<div class="explain"><strong>'+(a.correct?'✅ Goed antwoord!':'✅ Het goede antwoord: '+htmlSafe(a.q.answer))+'</strong><p>'+bi(a.q.explain,'Read the Dutch explanation above and check how the answer was calculated.')+'</p></div>'+
  button('next',s.idx+1===s.questions.length?'🏆 Bekijk mijn score':'Volgende vraag →','violet')+
  '</article></section>';
 }
