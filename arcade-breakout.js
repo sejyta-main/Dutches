@@ -13,7 +13,7 @@
   g={pack:opts.pack||1,back:opts.onBack||(()=>location.reload()),done:opts.onComplete||(()=>{}),
    x:W/2,ball:{x:W/2,y:257,vx:130,vy:-174},paddle:120,bricks,lives:4,hit:0,started:false,finished:false,awarded:false,
    keys:{left:false,right:false},spark:[],elapsed:0};
-  render();prev=0;raf=requestAnimationFrame(loop);
+  render();window.RekenNavigation?.top();prev=0;raf=requestAnimationFrame(loop);
  }
  function render(){
   root.innerHTML='<main class="shell arcade-v3-shell"><header class="topbar"><button class="logo" id="brick-back"><span class="logo-badge">🧱</span><strong>Rekenreis Arcade</strong></button><span class="pill star">🎮 LEVEL 1</span></header>'+
