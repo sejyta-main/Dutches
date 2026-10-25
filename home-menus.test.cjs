@@ -20,6 +20,9 @@ assert.match(dict,/window\.RekenArcade\?window\.RekenArcade\.offerHTML/,'Finishe
 assert.match(app,/window\.RekenNavigation\?\.top\(\)/,'Math hub navigation scrolls to top');
 assert.match(dict,/window\.RekenNavigation\?\.top\(\)/,'Dictee screen transitions scroll to top');
 assert.match(read('pet-world.js'),/window\.RekenNavigation\?\.top\(\)/,'Pet rooms scroll to top');
+for(const file of ['arcade-invaders.js','arcade-breakout.js','forest-game.js','pet-studio.js','memory-game.js']){
+ assert.match(read(file),/window\.RekenNavigation\?\.top\(\)/,'Game opens at top on iPad: '+file);
+}
 assert.match(styles,/\.home3-grid/);
 const idx=read('sw.js'),build=read('.github/workflows/deploy.yml');
 for(const file of ['navigation.js','home-menus.css']){assert.ok(idx.includes(file));assert.ok(build.includes(file))}
