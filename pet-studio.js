@@ -39,7 +39,7 @@
  function open(action,config){
   if(!['food','wash','dance','rest'].includes(action))return;
   current={action,pet:config.pet||'fox',name:config.name||'Milo',onBack:config.onBack,onComplete:config.onComplete,progress:0,done:false,timer:null,food:'🍎',stage:action==='wash'?'scrub':'start'};
-  completed=false;render();
+  completed=false;render();window.RekenNavigation?.top();
  }
  function finish(){
   if(current?.done)return;
