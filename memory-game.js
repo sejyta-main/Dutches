@@ -7,7 +7,7 @@
   for(let i=cards.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]]}
   seen=[];matched=new Set();moves=0;earned=false;draw();
  }
- function open(config){back=config.onBack;reward=config.onReward;newGame()}
+ function open(config){back=config.onBack;reward=config.onReward;newGame();window.RekenNavigation?.top()}
  function flip(i){
   if(seen.length>=2||seen.includes(i)||matched.has(i))return;
   seen.push(i);
