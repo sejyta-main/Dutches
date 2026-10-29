@@ -12,7 +12,7 @@ CONCURRENCY=int(os.getenv('VOICE_CONCURRENCY','5'))
 
 async def main():
     entries=json.loads((OUT/'inputs.json').read_text(encoding='utf-8'))
-    jobs=[(entry['id']+'-'+kind+'.mp3',entry[kind]) for entry in entries for kind in ('word','example')]
+    jobs=[(entry['id']+'-'+kind+'.mp3',entry[kind]) for entry in entries for kind in (('word',) if entry.get('only_word') else ('word','example'))]
     semaphore=asyncio.Semaphore(CONCURRENCY)
     failed=[]
     async def generate(filename,text):
