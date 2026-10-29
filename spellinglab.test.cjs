@@ -8,10 +8,10 @@ class Element{
  addEventListener(name,fn){this.listeners[name]=fn}
  click(){const fn=this.onclick||this.listeners.click;assert.equal(typeof fn,'function','No action bound: '+this.id);fn()}
 }
-const ids=new Map();
+const ids=new Map(),lists=new Map();
 const app={
  get innerHTML(){return markup},
- set innerHTML(value){markup=value;ids.clear()},
+ set innerHTML(value){markup=value;ids.clear();lists.clear()},
  querySelector(sel){if(!sel.startsWith('#'))return null;const id=sel.slice(1);
   if(!markup.includes('id="'+id+'"'))return null;
   if(!ids.has(id))ids.set(id,new Element(id));
@@ -20,13 +20,15 @@ const app={
  querySelectorAll(sel){
   const name=sel==='[data-stage]'?'stage':sel==='[data-answer]'?'answer':sel==='[data-tile]'?'tile':sel==='[data-arcade-game]'?'arcade-game':null;
   if(!name)return [];
+  if(lists.has(sel))return lists.get(sel);
   const hits=[...markup.matchAll(/<button\b([^>]*)>/g)].filter(m=>m[1].includes('data-'+name+'="'));
-  return hits.map((m,i)=>{
+  const found=hits.map((m,i)=>{
    const key=m[1].match(new RegExp('data-'+name+'="([^"]+)"'));
    const id=name+'-'+i,el=new Element(id,{[name.replace(/-([a-z])/g,(_,c)=>c.toUpperCase())]:key[1]});
    el.disabled=/\bdisabled\b/.test(m[1]);
    return el;
   });
+  lists.set(sel,found);return found;
  }
 };
 const storage={getItem:k=>store.has(k)?store.get(k):null,setItem:(k,v)=>store.set(k,String(v))};
