@@ -134,7 +134,7 @@
   // keep each tile unique even if a segment happens to equal a distractor
   return D.shuffle([...new Set([a,b,wrongA,wrongB])]);
  }
- function question(){
+ function question(scroll=true){
   const q=current(),s=session,step=s.index+1,total=s.questions.length;
   const intro=D.intro[s.phase],before=!s.answered;
   const identity=q.type==='sound'?'👂 '+bi('Wat hoor je?', 'What do you hear?'):
@@ -170,7 +170,7 @@
    button('lab-quit','← Fasen / Phases')+'</section>'+
    '<div class="lab-progress"><div style="width:'+(100*(s.index)/total)+'%"></div></div>'+
    '<section class="lab-card"><h1>'+identity+'</h1><p class="lab-prompt">'+bi(intro.nl,intro.en)+'</p>'+
-   sound+interaction+'</section>');
+   sound+interaction+'</section>',scroll);
   bind('lab-quit',goMenu);bind('lab-hear',()=>speak());bind('lab-slow',()=>speak('slow'));
   if(s.answered){bind('lab-next',next);return}
   root.querySelectorAll('[data-answer]').forEach(el=>el.onclick=()=>answer(el.dataset.answer));
@@ -189,9 +189,10 @@
    (meaning?'<p>🇧🇪 '+sz(meaning)+'</p>':'')+
    (q.type==='spell'?'<p>'+bi('Jij schreef: '+(r.given||'—'),'You wrote: '+(r.given||'—'))+'</p>':'')+
    '<p class="lab-rule">'+bi(explain.nl,explain.en)+'</p>';
+  const diagnostic=q.type==='spell'&&!good&&window.RekenSpellingCoach?.diagnose?window.RekenSpellingCoach.diagnose({word:q.item.word,pack:q.rule==='short'?2:3},r.given).html:'';
   const reflection=q.type==='rule'?'<p class="lab-reflect">'+bi('Vertel hardop: waarom is de eerste klankgroep open of dicht?', 'Say aloud: why is the first syllable open or closed?')+'</p>':'';
   return '<div class="lab-feedback '+(good?'lab-correct':'lab-incorrect')+'" aria-live="polite"><h2>'+(good?'🌟 '+bi('Goed gedaan!','Well done!'):'💡 '+bi('Dit gaan we oefenen.','Let’s learn from this.'))+'</h2>'+
-   '<div class="lab-answer-label">'+rule+'</div>'+full+reflection+
+   '<div class="lab-answer-label">'+rule+'</div>'+full+diagnostic+reflection+
    '<p class="lab-retry-hint">'+(good?'⭐ +1 juist':'💪 '+bi('Je ziet hoe de spelling werkt. Probeer dit later opnieuw.','Now you can see how the spelling works. Try again later.'))+'</p>'+
    button('lab-next',session.index+1>=session.questions.length?'🏆 Mijn resultaat / My score':'➡️ Volgende / Next','primary')+'</div>';
  }
@@ -204,7 +205,7 @@
    rule:q.rule,correct,given,expected:expect,novel:q.type==='spell'&&!session.novelAtStart.has(q.item.word)};
   session.results.push(record);session.answered=true;
   saved.attempts.push(record);saved.attempts=saved.attempts.slice(-1500);
-  if(q.type==='spell'&&!saved.seenWords.includes(q.item.word))saved.seenWords.push(q.item.word);
+  if(q.item&&!saved.seenWords.includes(q.item.word))saved.seenWords.push(q.item.word);
   write();stopAudio();question(false);
  }
  function next(){
