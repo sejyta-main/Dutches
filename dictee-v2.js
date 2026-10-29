@@ -57,6 +57,7 @@ function menu(){
  shell('<section class="dict-hero"><div><div class="eyebrow">🎓 Klaar voor de spellingtoets?</div><h1>🎧 Dictee-eiland</h1>'+
  '<p>'+bi('Oefen alle acht woordpakketten. Luister, schrijf en leer op jouw tempo!','Practice all eight spelling packs. Listen, write and learn at your own pace!')+'</p>'+
  '<span class="dict-chip">8 woordpakketten</span><span class="dict-chip">160 woorden</span><span class="dict-chip">🎮 3 echte retrogames</span></div><div class="dict-hero-art">🦊✏️</div></section>'+
+ '<section class="lab-entry"><div class="lab-entry-text"><span class="lab-entry-tag">🧠 NIEUW · 5 LEERFASEN</span><h2>👂 Spellinglab</h2><p>'+bi('Leer korte en lange klanken horen, bouw klankgroepen, ontdek spellingregels en oefen nieuwe woorden die niet in je woordpakket staan.','Hear short and long vowels, build syllables, discover spelling rules and practice unfamiliar words beyond the school lists.')+'</p><div class="lab-entry-foot">🎧 Hoorlab · 🧩 Klankgroepen · 🔍 Regels · ✏️ Nieuwe woorden · 🏆 Toets</div></div>'+button('dict2-open-lab','🚀 Start Spellinglab','primary')+'</section>'+ 
  '<div class="section-heading"><h2>📚 Kies jouw woordpakket</h2></div>'+
  '<div class="dict2-packs">'+book.packs.map(x=>{
   const s=packStats(x.number),stud=studies(x.number).size;
@@ -75,6 +76,7 @@ function menu(){
  '<div class="result-actions">'+button('dict2-report','📊 Resultaten','outline')+button('dict2-exit','🏠 Rekenreis','outline')+'</div>'+
  '<p class="privacy">'+attempts+' antwoorden geregistreerd • De resultaten van Woordpakket 7 blijven behouden. Je hoort de volledige woordgroep, maar je mag ook alleen het gevraagde woord typen.</p></article>');
  app.querySelectorAll('[data-pack]').forEach(b=>b.onclick=()=>{pack=Number(b.dataset.pack);show()});
+ bind('dict2-open-lab',()=>{if(!window.RekenSpellingLab){alert('Spellinglab wordt geladen. Ververs de app.');return}closeVoice();window.RekenSpellingLab.open({onBack:()=>{page='menu';lastView='';show()}})});
  bind('dict2-10',()=>begin('short'));bind('dict2-20',()=>begin('full'));
  bind('dict2-errors',()=>begin('wrong'));bind('dict2-exam',()=>begin('exam'));
  bind('dict2-learn',()=>{page='study';show()});
