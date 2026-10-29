@@ -1,9 +1,9 @@
 /* Rekenreis offline cache. Online-first for app code prevents old iPad versions. */
-const CACHE = 'rekenreis-v16-three-menus-arcade-top';
+const CACHE = 'rekenreis-v17-spellinglab-five-phases';
 const APP = [
   './', './index.html', './style.css', './adventures.css',
   './rewards.css', './pet-world.css', './pet-home-install.css',
-  './navigation.js', './home-menus.css', './bilingual-instructions.js', './bilingual-instructions.css', './arcade-invaders.js', './arcade-breakout.js', './arcade-hub.js', './arcade-v3.css', './world-progress.js', './voice-engine.js', './spelling-coach.js', './pet-studio.js', './forest-game.js', './letterblaster.js', './pet-studio.css', './forest-game.css', './games-coach.css', './app.js', './pet-play.js', './interactive-pet.css', './dictee.js', './woordpakketten.js', './dictee-v2.js', './retro-game.js', './dictee-v2.css', './memory-game.js', './activities.js',
+  './spellinglab.js', './spellinglab-data.js', './spellinglab.css', './navigation.js', './home-menus.css', './bilingual-instructions.js', './bilingual-instructions.css', './arcade-invaders.js', './arcade-breakout.js', './arcade-hub.js', './arcade-v3.css', './world-progress.js', './voice-engine.js', './spelling-coach.js', './pet-studio.js', './forest-game.js', './letterblaster.js', './pet-studio.css', './forest-game.css', './games-coach.css', './app.js', './pet-play.js', './interactive-pet.css', './dictee.js', './woordpakketten.js', './dictee-v2.js', './retro-game.js', './dictee-v2.css', './memory-game.js', './activities.js',
   './rewards.js', './pet-core.js', './pet-world.js', './pet-entry.js',
   './install-mobile.js', './manifest.webmanifest',
   './icons/icon.svg', './icons/icon-192.png',
