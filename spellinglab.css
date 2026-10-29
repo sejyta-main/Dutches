@@ -73,3 +73,12 @@
 @media(max-width:680px){.lab-phase-grid{grid-template-columns:1fr 1fr;gap:11px}.lab-phase:nth-child(5){grid-column:1 / span 2}.lab-phase{min-height:215px}.lab-session-top{flex-wrap:wrap}.lab-choice-grid{gap:10px}.lab-choice{min-height:118px}.lab-choice strong{font-size:19px}.lab-choice small{font-size:12px}}
 @media(max-width:430px){.lab-phase-grid{grid-template-columns:1fr}.lab-phase:nth-child(5){grid-column:1}.lab-phase{display:grid;grid-template-columns:55px 1fr;gap:4px 13px;text-align:left;align-items:center;min-height:132px}.lab-phase-icon{grid-row:span 4;font-size:41px}.lab-phase b{justify-self:start}.lab-skill-grid{grid-template-columns:1fr}.lab-choice-grid{grid-template-columns:1fr}.lab-choice{min-height:92px}.lab-topbar{gap:8px}.lab-wallet{font-size:13px}.lab-card{padding:15px}.lab-tile{min-width:68px}}
 @media(prefers-reduced-motion:reduce){.lab-phase:active{transform:none}}
+
+/* Spellinglab entry inside Dictee-eiland */
+.lab-entry{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:18px 0 25px;border:3px solid #c7dbff;border-radius:24px;padding:20px 23px;background:linear-gradient(120deg,#e4efff,#f6e8ff,#e9ffec);box-shadow:0 8px 18px #515caf1a}
+.lab-entry-text{flex:1;min-width:0}.lab-entry h2{color:#5842a5;font-size:clamp(26px,4vw,36px);margin:6px 0 7px}
+.lab-entry p{line-height:1.5;margin:8px 0}.lab-entry p .reken-taal{display:flex}
+.lab-entry-tag{color:#5f4ca1;font-weight:900;font-size:12px;letter-spacing:1px}
+.lab-entry-foot{font-size:13px;font-weight:800;color:#61628e;margin-top:13px}
+.lab-entry>.btn{min-height:61px;min-width:168px;font-weight:900;font-size:16px}
+@media(max-width:610px){.lab-entry{flex-direction:column;align-items:stretch;padding:17px}.lab-entry>.btn{width:100%}}
