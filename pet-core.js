@@ -1,7 +1,7 @@
 'use strict';
 /* Rekenreis Pet World: local progress, friendly economy, no accounts or purchases. */
 (function(){
- const KEY='rekenreis-pet-v1',MATH='rekenreis-progress-v1',DICT='rekenreis-dictee-v1';
+ const KEY='rekenreis-pet-v1',MATH='rekenreis-progress-v1',DICT='rekenreis-dictee-v1',LAB='rekenreis-spellinglab-v1';
  const chapters=[
   {id:'blocks',name:'Het Tellenbos',icon:'🌳',xp:0,scene:'bos',desc:'Ontdek alle geheime getallen.'},
   {id:'place',name:'Het Cijferkasteel',icon:'🏰',xp:100,scene:'kasteel',desc:'De kamers van D, H, T en E.'},
@@ -49,14 +49,16 @@
  }
  function save(d){try{localStorage.setItem(KEY,JSON.stringify(d));return true}catch(e){return false}}
  function numbers(){
-  const m=json(MATH),d=json(DICT),history=Array.isArray(m.history)?m.history:[],dict=Array.isArray(d.history)?d.history:[];
+  const m=json(MATH),d=json(DICT),lab=json(LAB),history=Array.isArray(m.history)?m.history:[],dict=Array.isArray(d.history)?d.history:[];
   const mathCorrect=history.filter(x=>x.correct).length,dictCorrect=dict.filter(x=>x.correct).length;
-  const xp=history.reduce((n,x)=>n+(x.correct?12:4),0)+dict.reduce((n,x)=>n+(x.correct?10:3),0);
+  const labAttempts=Array.isArray(lab.attempts)?lab.attempts:[];
+  const xp=history.reduce((n,x)=>n+(x.correct?12:4),0)+dict.reduce((n,x)=>n+(x.correct?10:3),0)+labAttempts.reduce((n,x)=>n+(x.correct?6:2),0);
   const mathSessions=Array.isArray(m.sessions)?m.sessions:[];
   const dictSessions=Array.isArray(d.sessions)?d.sessions:[];
+  const labSessions=Array.isArray(lab.sessions)?lab.sessions:[];
   // Each newly completed practice round earns 25 additional coins, once per saved round.
   // Old sessions have no bonusCoins and are not retroactively inflated.
-  const completedBonus=[...mathSessions,...dictSessions].reduce((sum,record)=>
+  const completedBonus=[...mathSessions,...dictSessions,...labSessions].reduce((sum,record)=>
     sum+(record&&Number(record.total)>0?cap(record.bonusCoins,0,25):0),0);
   return {xp,mathCorrect,dictCorrect,earned:60+5*mathCorrect+7*dictCorrect+completedBonus,
     completionBonus:completedBonus,mathSessions};
