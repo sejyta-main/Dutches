@@ -37,11 +37,11 @@ const wp10=book.getPack(10);
 assert.ok(wp10,'WP10 exists independently of the missing WP9');
 assert.equal(book.getPack(9),undefined,'No fabricated school package 9');
 assert.equal(wp10.words.length,8,'Six isolated words and two sentences');
-assert.deepEqual(wp10.words.map(w=>w.word),[
+assert.deepEqual(Array.from(wp10.words,w=>w.word),[
  'geheim','flauw','koud','weide','paus','stout',
  'Gaan je ouders op reis met de auto?','Mijn vijand krijgt nooit gelijk!'
 ],'Exact teacher WP10 list, in original sheet order');
-assert.deepEqual(wp10.words.map(w=>w.isSentence),[false,false,false,false,false,false,true,true]);
+assert.deepEqual(Array.from(wp10.words,w=>w.isSentence),[false,false,false,false,false,false,true,true]);
 assert.equal(new Set(wp10.words.map(w=>w.id)).size,8,'Unique audio ids for all eight new tasks');
 assert.ok(wp10.words.every(w=>w.pack===10&&w.es&&w.meaning&&w.example),'Translations and Dutch explanations for every item');
 assert.equal(book.getWord(10,'stout').phrase,'stout');
