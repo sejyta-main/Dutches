@@ -38,7 +38,7 @@ function message(s){const el=app.querySelector('#dict2-voice');if(el)el.textCont
 function bind(id,fn){let el=app.querySelector('#'+id);if(el)el.addEventListener('click',fn)}
 function shell(inner){
  app.innerHTML='<main class="shell dict2-app"><header class="topbar">'+
- '<button id="dict2-back-home" class="logo"><span class="logo-badge">🦊</span><span><strong>Rekenreis</strong><small>Dictee-eiland · Woordpakket 1–8</small></span></button><span class="pill star">🇧🇪 160 woorden</span></header>'+
+ '<button id="dict2-back-home" class="logo"><span class="logo-badge">🦊</span><span><strong>Rekenreis</strong><small>Dictee-eiland · Woordpakket 1–8 en 10</small></span></button><span class="pill star">🇧🇪 '+book.all.length+' taken</span></header>'+
  inner+'<footer class="footer">✏️ Dictee-eiland • Vlaamse uitspraak waar beschikbaar • Je resultaten blijven op dit apparaat</footer></main>';
  bind('dict2-back-home',leave);
  const view=page+'|'+pack+'|'+(session?.idx??'');
@@ -270,7 +270,7 @@ function report(){
  '<div class="report-list">'+book.packs.map(p=>{
   const r=packStats(p.number),n=studies(p.number).size;
   return '<button class="dict2-report-line" data-report-pack="'+p.number+'"><strong>'+p.icon+' Woordpakket '+p.number+'</strong>'+
-  '<span>'+r.correct+'/'+r.total+' juist · '+r.pct+'% · '+n+'/20 geleerd</span></button>';
+  '<span>'+r.correct+'/'+r.total+' juist · '+r.pct+'% · '+n+'/'+p.words.length+' geleerd</span></button>';
  }).join('')+'</div>'+(lastBonus?'<div class="dict2-claimed-bonus"><strong>🎮 Bonus beschikbaar</strong><p>Laatste ronde: '+lastBonus.correct+'/'+lastBonus.total+' juist.</p>'+button('dict2-report-bonus','🕹️ Mijn bonus spelen','primary')+'</div>':'')+'<div class="result-actions">'+button('dict2-csv','⬇️ Download CSV','violet')+
  button('dict2-report-done','🏠 Startscherm','outline')+'</div>'+
  '<p class="privacy">Je oude resultaten van Woordpakket 7 zijn behouden. Alles blijft op dit toestel.</p></article></section>');
