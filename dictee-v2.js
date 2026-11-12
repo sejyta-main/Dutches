@@ -48,7 +48,7 @@ function leave(){closeVoice();session=null;page='menu';returnHome()}
 function show(){if(page==='menu')menu();if(page==='study')study();if(page==='play')play();if(page==='answer')answerScreen();if(page==='finish')finish();if(page==='bonus')bonusPage();if(page==='report')report()}
 function open(config={}){
  returnHome=typeof config.onBack==='function'?config.onBack:()=>location.reload();
- const p=Number(config.pack);if(p>=1&&p<=8)pack=p;
+ const p=Number(config.pack);if(book.getPack(p))pack=p;
  page=config.page==='report'?'report':'menu';session=null;last=null;lastView='';show();
 }
 function completedBonus(){return (saved.sessions||[]).slice().reverse().find(r=>Number(r.total)>0)||null}
@@ -227,7 +227,7 @@ function bonusPage(){
  const last=completedBonus();
  if(!last){page='menu';show();return}
  const bonusPack=Number(last.pack);
- if(bonusPack>=1&&bonusPack<=8)pack=bonusPack;
+ if(book.getPack(bonusPack))pack=bonusPack;
  const recommended=window.RekenArcade?.peek()||'invaders';
  shell('<section class="game"><article class="question-card dict2-bonus-history"><div class="feedback-icon">🏆</div><h2>Je verdiende arcadebonus!</h2>'+
  '<p>Je vorige dictee: <strong>'+last.correct+' van '+last.total+' juist</strong>. Je hoeft niet opnieuw te oefenen om je bonus te spelen.</p>'+
