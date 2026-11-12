@@ -43,7 +43,8 @@
   5:{summary:'Other sounds follow their usual spelling. Look at vowel combinations and different consonants.',tip:'Break the word into sound groups, then write each part.'},
   6:{summary:'Combine the spelling rules. Recognize the separate parts in compound words.',tip:'Short vowel: green. Long vowel: red. Other sounds: usual spelling.'},
   7:{summary:'The weak, unstressed e is still written as e. Pay attention to -enen, -elen, -eren and -ere.',tip:'Listen for endings like in kinderen, wandelen and oefenen.'},
-  8:{summary:'Find the base word and add the correct diminutive ending: -je, -tje, -pje or -jes.',tip:'Some vowels change: blad → blaadje, gat → gaatje, glas → glaasje.'}
+  8:{summary:'Find the base word and add the correct diminutive ending: -je, -tje, -pje or -jes.',tip:'Some vowels change: blad → blaadje, gat → gaatje, glas → glaasje.'},
+  10:{summary:'Practice six individual words and two complete sentences from the teacher’s dictation sheet.',tip:'Watch Dutch vowel combinations ei/ij and ou/au. For sentences, use capital letters and punctuation.'}
  });
  window.RekenTaal=Object.freeze({pair,note,math,packs});
 })();
