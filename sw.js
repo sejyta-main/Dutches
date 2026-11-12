@@ -1,5 +1,5 @@
 /* Rekenreis offline cache. Online-first for app code prevents old iPad versions. */
-const CACHE = 'rekenreis-v17-spellinglab-five-phases';
+const CACHE = 'rekenreis-v18-wordpakket10-20261112';
 const APP = [
   './', './index.html', './style.css', './adventures.css',
   './rewards.css', './pet-world.css', './pet-home-install.css',
