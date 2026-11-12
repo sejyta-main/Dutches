@@ -79,7 +79,7 @@ function landing(){
  '<div class="home3-wallet">🪙 '+count+' muntjes voor je huisdier</div></section>'+
  '<div class="home3-grid">'+
  '<button class="home3-card home3-math" id="hub-math"><span class="home3-emoji">🧮</span><strong>Wiskunde</strong><span>'+bi('5 rekenwerelden + gemengde toets','5 math worlds + a mixed assessment')+'</span><b>▶ Start rekenen</b></button>'+
- '<button class="home3-card home3-dictee" id="hub-dictee"><span class="home3-emoji">🎧</span><strong>Dictee</strong><span>'+bi('8 woordpakketten + gemengd dictee','8 spelling packs + a mixed assessment')+'</span><b>▶ Start dictee</b></button>'+
+ '<button class="home3-card home3-dictee" id="hub-dictee"><span class="home3-emoji">🎧</span><strong>Dictee</strong><span>'+bi('Woordpakket 1–8 en 10 + gemengd dictee','School spelling packs 1–8 and 10 + a mixed assessment')+'</span><b>▶ Start dictee</b></button>'+
  '<button class="home3-card home3-pet" id="hub-pet"><span class="home3-emoji">🐾</span><strong>Mijn huisdier</strong><span>'+bi('Eten, wassen, dansen, aankleden en spelen','Feed, wash, dance, dress up and play')+'</span><b>▶ Naar het huisje</b></button>'+
  '</div><p class="home3-foot">'+bi('Na elke afgeronde oefenronde: 25 extra muntjes en keuze uit drie arcadespellen.','After every finished practice round: 25 bonus coins and your choice of three arcade games.')+'</p>';
 }
