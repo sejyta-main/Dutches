@@ -1,5 +1,5 @@
 'use strict';
-/* Eight photographed school word packs; spelling, study, quizzes, and arcade. */
+/* Teacher-authenticated packs 1–8 and 10; exact six words + two full sentence dictations in WP10. */
 (function(){
 const book=window.RekenWoordpakketten;
 if(!book)return;
@@ -51,33 +51,35 @@ function open(config={}){
  const p=Number(config.pack);if(p>=1&&p<=8)pack=p;
  page=config.page==='report'?'report':'menu';session=null;last=null;lastView='';show();
 }
-function completedBonus(){return (saved.sessions||[]).slice().reverse().find(r=>Number(r.total)>=10)||null}
+function completedBonus(){return (saved.sessions||[]).slice().reverse().find(r=>Number(r.total)>0)||null}
 function menu(){
  const p=book.getPack(pack),attempts=(saved.history||[]).length,lastBonus=completedBonus();
  shell('<section class="dict-hero"><div><div class="eyebrow">🎓 Klaar voor de spellingtoets?</div><h1>🎧 Dictee-eiland</h1>'+
- '<p>'+bi('Oefen alle acht woordpakketten. Luister, schrijf en leer op jouw tempo!','Practice all eight spelling packs. Listen, write and learn at your own pace!')+'</p>'+
- '<span class="dict-chip">8 woordpakketten</span><span class="dict-chip">160 woorden</span><span class="dict-chip">🎮 3 echte retrogames</span></div><div class="dict-hero-art">🦊✏️</div></section>'+
+ '<p>'+bi('Oefen onze schoolwoordpakketten. Luister, schrijf en leer op jouw tempo!','Practice the available school spelling packs. Listen, write and learn at your own pace!')+'</p>'+
+ '<span class="dict-chip">'+book.packs.length+' woordpakketten</span><span class="dict-chip">'+book.all.length+' opdrachten</span><span class="dict-chip">🎮 3 echte retrogames</span></div><div class="dict-hero-art">🦊✏️</div></section>'+
  '<section class="lab-entry"><div class="lab-entry-text"><span class="lab-entry-tag">🧠 NIEUW · 5 LEERFASEN</span><h2>👂 Spellinglab</h2><p>'+bi('Leer korte en lange klanken horen, bouw klankgroepen, ontdek spellingregels en oefen nieuwe woorden die niet in je woordpakket staan.','Hear short and long vowels, build syllables, discover spelling rules and practice unfamiliar words beyond the school lists.')+'</p><div class="lab-entry-foot">🎧 Hoorlab · 🧩 Klankgroepen · 🔍 Regels · ✏️ Nieuwe woorden · 🏆 Toets</div></div>'+button('dict2-open-lab','🚀 Start Spellinglab','primary')+'</section>'+ 
  '<div class="section-heading"><h2>📚 Kies jouw woordpakket</h2></div>'+
  '<div class="dict2-packs">'+book.packs.map(x=>{
   const s=packStats(x.number),stud=studies(x.number).size;
   return '<button class="dict2-pack '+(pack===x.number?'active':'')+'" data-pack="'+x.number+'" type="button" aria-pressed="'+(pack===x.number)+'">'+
   '<span class="dict2-pack-number">'+x.icon+' Pakket '+x.number+'</span><strong>'+safe(x.title)+'</strong>'+
-  '<small>✏️ '+(s.total?s.correct+'/'+s.total+' juist':'Nog niet geoefend')+' · 📖 '+stud+'/20 geleerd</small>'+
-  '<span class="dict2-progress"><span style="width:'+(stud*5)+'%"></span></span></button>';
+  '<small>✏️ '+(s.total?s.correct+'/'+s.total+' juist':'Nog niet geoefend')+' · 📖 '+stud+'/'+x.words.length+' geleerd</small>'+
+  '<span class="dict2-progress"><span style="width:'+(stud/x.words.length*100)+'%"></span></span></button>';
  }).join('')+'</div>'+
  '<article class="panel dict2-action-panel"><h2>'+p.icon+' Woordpakket '+pack+': '+safe(p.title)+'</h2>'+
  '<p>'+bi(p.summary,englishPack(p.number).summary)+'</p><div class="tip">💡 '+bi(p.tip,englishPack(p.number).tip)+'</div>'+
- '<div class="dict2-modes">'+button('dict2-10','⚡ 10 woorden','violet')+button('dict2-20','✏️ Alle 20 woorden','green')+
+ '<div class="dict2-modes">'+button('dict2-10',pack===10?'⚡ 6 woorden':'⚡ 10 woorden','violet')+
+ button('dict2-20',pack===10?'✏️ Alle 8 opdrachten':'✏️ Alle 20 woorden','green')+
+ (pack===10?button('dict2-sentences','💬 2 zinnen','outline'):'')+
  button('dict2-learn','📖 Leren & uitleg','outline')+button('dict2-errors','💪 Mijn foutjes','outline')+'</div>'+
- '<div class="dict2-mega"><div><strong>🎯 Gemengd dictee · Alle 8 pakketten</strong><p>'+bi('40 woorden: 5 uit elk pakket. Je krijgt een totaalscore en resultaten per pakket.','40 words: 5 from each pack. Get an overall score and a result for each spelling pack.')+'</p></div>'+
+ '<div class="dict2-mega"><div><strong>🎯 Gemengd dictee · Alle '+book.packs.length+' pakketten</strong><p>'+bi(''+(book.packs.length*5)+' opdrachten: 5 uit elk beschikbaar pakket. Je krijgt een totaalscore en resultaten per pakket.',''+(book.packs.length*5)+' tasks: 5 from each available school pack. Get an overall score and a result for each pack.')+'</p></div>'+
  button('dict2-exam','🎯 Start proefdictee','primary')+'</div>'+
  (lastBonus?'<div class="dict2-claimed-bonus"><strong>🎮 Je arcadebonus wacht op je!</strong><p>Je voltooide een dictee met '+lastBonus.correct+' van '+lastBonus.total+' woorden juist. Speel je verdiende bonus zonder het dictee opnieuw te doen.</p>'+button('dict2-past-bonus','🕹️ Speel mijn verdiende bonus','primary')+'</div>':'')+
  '<div class="result-actions">'+button('dict2-report','📊 Resultaten','outline')+button('dict2-exit','🏠 Rekenreis','outline')+'</div>'+
  '<p class="privacy">'+attempts+' antwoorden geregistreerd • De resultaten van Woordpakket 7 blijven behouden. Je hoort de volledige woordgroep, maar je mag ook alleen het gevraagde woord typen.</p></article>');
  app.querySelectorAll('[data-pack]').forEach(b=>b.onclick=()=>{pack=Number(b.dataset.pack);show()});
  bind('dict2-open-lab',()=>{if(!window.RekenSpellingLab){alert('Spellinglab wordt geladen. Ververs de app.');return}closeVoice();window.RekenSpellingLab.open({onBack:()=>{page='menu';lastView='';show()}})});
- bind('dict2-10',()=>begin('short'));bind('dict2-20',()=>begin('full'));
+ bind('dict2-10',()=>begin('short'));bind('dict2-20',()=>begin('full'));bind('dict2-sentences',()=>begin('sentences'));
  bind('dict2-errors',()=>begin('wrong'));bind('dict2-exam',()=>begin('exam'));
  bind('dict2-learn',()=>{page='study';show()});
  bind('dict2-past-bonus',()=>{page='bonus';show()});
@@ -87,6 +89,8 @@ function begin(mode){
  let order;
  if(mode==='exam')order=shuffle(book.packs.flatMap(p=>shuffle(p.words).slice(0,5)));
  else if(mode==='wrong')order=shuffle(hardWords(pack));
+ else if(mode==='sentences')order=shuffle(book.getPack(pack).words.filter(w=>w.isSentence));
+ else if(mode==='short'&&pack===10)order=shuffle(book.getPack(pack).words.filter(w=>!w.isSentence));
  else order=shuffle(book.getPack(pack).words).slice(0,mode==='short'?10:20);
  if(!order.length){alert('Er zijn geen openstaande foutjes. Goed gedaan!');return}
  session={mode,pack:mode==='exam'?null:pack,questions:order,idx:0,results:[]};
@@ -100,16 +104,16 @@ function play(){
  const q=session.questions[session.idx],p=book.getPack(q.pack);
  voiceSelect();
  shell('<section class="game"><div class="game-head">'+button('dict2-stop','← Stoppen','outline')+
- '<div class="game-label"><strong>🎧 '+(session.mode==='exam'?'Proefdictee':'Woordpakket '+q.pack)+'</strong><small>Woord '+(session.idx+1)+' van '+session.questions.length+'</small></div>'+
+ '<div class="game-label"><strong>🎧 '+(session.mode==='exam'?'Proefdictee':'Woordpakket '+q.pack)+'</strong><small>Opdracht '+(session.idx+1)+' van '+session.questions.length+'</small></div>'+
  '<div class="counter">⭐ '+session.results.filter(r=>r.correct).length+'</div></div>'+
  '<div class="step-progress"><div style="width:'+(session.idx/session.questions.length*100)+'%"></div></div>'+
- '<article class="question-card dict2-question"><div class="question-eyebrow">'+p.icon+' Luister en schrijf</div><h2>'+bi('Welk woord hoor je?','Which word do you hear?')+'</h2>'+
- '<p class="hint">'+bi('Luister naar het woord en schrijf het juist.','Listen to the Dutch word and spell it correctly.')+'</p><div class="dict-listening"><div class="dict-speaker">🎧</div>'+
+ '<article class="question-card dict2-question"><div class="question-eyebrow">'+p.icon+' Luister en schrijf</div><h2>'+(q.isSentence?bi('Welke zin hoor je?','Which sentence do you hear?'):bi('Welk woord hoor je?','Which word do you hear?'))+'</h2>'+
+ '<p class="hint">'+(q.isSentence?bi('Luister naar de hele zin. Schrijf alle woorden in de juiste volgorde, met het leesteken.','Listen to the whole sentence. Write every word in order and include the punctuation.'):bi('Luister naar het woord en schrijf het juist.','Listen to the Dutch word and spell it correctly.'))+'</p><div class="dict-listening"><div class="dict-speaker">🎧</div>'+
  '<div class="dict-audio-buttons">'+button('dict2-hear','🔊 Luister')+button('dict2-slow','🐢 Langzaam','outline')+button('dict2-chunks','🚂 In stukjes','outline')+'</div>'+
  '<p class="dict-note" id="dict2-voice" aria-live="polite">'+safe(voiceInfo)+'</p></div>'+
  '<form id="dict2-form"><label class="dict-label" for="dict2-write">✏️ Schrijf hier je antwoord</label>'+
- '<input id="dict2-write" class="dict-input" type="text" lang="nl-BE" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required maxlength="80" placeholder="Typ het woord…">'+
- '<p class="dict-note center">'+bi('Je mag het woord of de hele uitdrukking schrijven.','You may type just the word or the whole phrase.')+'</p><div class="center"><button type="submit" class="btn green">✅ Controleer</button></div></form></article></section>');
+ '<input id="dict2-write" class="dict-input" type="text" lang="nl-BE" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" required maxlength="180" placeholder="'+(q.isSentence?'Typ de hele zin…':'Typ het woord…')+'">'+
+ '<p class="dict-note center">'+(q.isSentence?bi('Schrijf de volledige zin, met een vraagteken of uitroepteken.','Write the full sentence, including ? or !.'):bi('Je mag het woord of de hele uitdrukking schrijven.','You may type just the word or the whole phrase.'))+'</p><div class="center"><button type="submit" class="btn green">✅ Controleer</button></div></form></article></section>');
  bind('dict2-stop',()=>{if(confirm('Wil je stoppen met dit dictee?')){closeVoice();page='menu';session=null;show()}});
  bind('dict2-hear',()=>speak(q));bind('dict2-slow',()=>speak(q,true));bind('dict2-chunks',()=>speak(q,false,false,true));
  app.querySelector('#dict2-form').onsubmit=e=>{
@@ -188,7 +192,7 @@ function arcade(id){
 function finish(){
  const correct=session.results.filter(r=>r.correct).length,total=session.results.length,pct=Math.round(correct/total*100),wrongs=session.results.filter(x=>!x.correct);
  if(!session.arcadeGame)session.arcadeGame=window.RekenArcade?.next()||'invaders';
- const showBonus=total>=10&&!session.bonusOfferSeen;
+ const showBonus=total>0&&!session.bonusOfferSeen;
  if(showBonus)session.bonusOfferSeen=true;
  const breakdown=session.mode==='exam'?'<div class="home3-breakdown"><h3>📊 Per woordpakket / By spelling pack</h3>'+book.packs.map(p=>{
   const r=session.results.filter(x=>x.pack===p.number);
@@ -231,7 +235,7 @@ function study(){
  const p=book.getPack(pack),marks=studies(pack),count=marks.size;
  shell('<section class="game dict2-study"><div class="game-head">'+button('dict2-study-back','← Pakketten','outline')+
  '<div class="game-label"><strong>📖 Woordpakket '+pack+'</strong><small>Woorden lezen en oefenen</small></div>'+
- '<span class="counter">'+count+'/20 geleerd</span></div>'+
+ '<span class="counter">'+count+'/'+p.words.length+' geleerd</span></div>'+
  '<article class="question-card"><div class="dict2-rule-summary"><h2>'+p.icon+' '+safe(p.title)+'</h2><p>'+bi(p.summary,englishPack(p.number).summary)+'</p>'+
  '<div class="tip">💡 '+bi(p.tip,englishPack(p.number).tip)+'</div><p><strong>Voorbeeld / Example:</strong> '+safe(p.example)+'</p></div>'+
  '<p class="hint">'+bi('Luister naar elk woord, lees wat het betekent en vink het aan als je het geoefend hebt.','Listen to each word, read its meaning and mark it when you have practiced it.')+'</p>'+
@@ -239,7 +243,7 @@ function study(){
  '<button type="button" class="dict2-hear" data-hear="'+w.id+'" aria-label="Luister naar '+safe(w.word)+'">🔊</button>'+
  '<div class="dict2-study-copy"><strong>'+safe(w.phrase)+'</strong><small>🇪🇸 '+safe(w.es)+' • '+safe(w.meaning)+'</small><span>'+safe(w.example)+'</span></div>'+
  '<label class="dict2-studied"><input type="checkbox" data-mark="'+w.id+'" '+(marks.has(w.id)?'checked':'')+'><span>Geleerd</span></label></div>').join('')+'</div>'+
- (count===20?(window.RekenArcade?window.RekenArcade.offerHTML(window.RekenArcade.peek()):'<p>🎮 Retrogames worden geladen...</p>'):'<div class="dict2-progress-words">📖 '+count+' van de 20 woorden geleerd • Na 20/20 kies je een retrospel.</div>')+
+ (count===p.words.length?(window.RekenArcade?window.RekenArcade.offerHTML(window.RekenArcade.peek()):'<p>🎮 Retrogames worden geladen...</p>'):'<div class="dict2-progress-words">📖 '+count+' van de '+p.words.length+' opdrachten geleerd • Na '+p.words.length+'/'+p.words.length+' kies je een retrospel.</div>')+
  '<div class="result-actions">'+button('dict2-study-quiz','✍️ Oefen het dictee','violet')+
  button('dict2-study-return','📚 Terug naar de pakketten','outline')+'</div></article></section>');
  bind('dict2-study-back',()=>{page='menu';show()});bind('dict2-study-return',()=>{page='menu';show()});
@@ -254,7 +258,7 @@ function study(){
 function report(){
  const total=saved.history.length,good=saved.history.filter(r=>r.correct).length,lastBonus=completedBonus();
  shell('<section class="dashboard"><div class="game-head">'+button('dict2-report-back','← Woordpakketten','outline')+
- '<div class="game-label"><strong>📊 Dictee-resultaten</strong><small>Woordpakket 1–8</small></div></div>'+
+ '<div class="game-label"><strong>📊 Dictee-resultaten</strong><small>Woordpakket 1–8 en 10</small></div></div>'+
  '<article class="question-card"><div class="score-grid"><div class="score-tile"><strong>'+total+'</strong><small>Antwoorden</small></div>'+
  '<div class="score-tile"><strong>'+(total?Math.round(good/total*100):0)+'%</strong><small>Juist</small></div>'+
  '<div class="score-tile"><strong>'+saved.sessions.length+'</strong><small>Oefenrondes</small></div></div>'+
