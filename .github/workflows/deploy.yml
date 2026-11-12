@@ -61,6 +61,7 @@ jobs:
           node dictee-bonus.test.cjs
           node --check retro-game.js
           node dictee-v2.test.cjs
+          node woordpakket10.test.cjs
           node --check memory-game.js
           node --check activities.js
           node --check rewards.js
