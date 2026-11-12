@@ -138,6 +138,11 @@ function specific(item){
   return 'Je hoort een doffe e. Bij '+item.word+' schrijf je '+(ending?'-'+ending:'de letter e')+'. '+p.example;
  }
  if(item.pack===8)return 'Zoek het grondwoord: '+(roots[item.word]||item.word)+'. '+p.summary;
+ if(item.pack===10){
+  if(item.isSentence)return 'Schrijf de hele zin. Begin met een hoofdletter en eindig met '+(item.phrase.endsWith('?')?'een vraagteken (?).':'een uitroepteken (!).')+' Let op: ouders heeft ou, auto heeft au, vijand/krijgt/gelijk hebben ij.';
+  const tips={geheim:'geheim schrijf je met ei.',flauw:'flauw schrijf je met auw.',koud:'koud schrijf je met ou.',weide:'weide schrijf je met ei.',paus:'paus schrijf je met au.',stout:'stout schrijf je met ou.'};
+  return (tips[item.word]||p.tip)+' Luister nog eens goed naar de Vlaamse uitspraak.';
+ }
  return p.example+' '+p.tip;
 }
 function answerScreen(){
