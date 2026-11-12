@@ -1,5 +1,5 @@
 'use strict';
-/* 160 school words, exactly 20 per photographed Woordpakket. */
+/* Original eight 20-word school packs + authenticated WP10 sheet: six words and two full sentences. WP9 intentionally absent. */
 (function(){
 const DETAILS=[
 {number:1,title:'Hoorweg en onthoudwoorden',icon:'👂',summary:'Luister goed naar de klanken. Gebruik de hoorweg, maak woorden langer om eindletters te horen, of denk aan een onthoudwoord.',tip:'De hoorweg helpt vaak. Sommige woorden met ei/ij of ou/au leer je onthouden. Bijvoorbeeld: mooi schrijf je zoals kooi.',example:'grond → gronden: je hoort de d beter.'},
@@ -9,7 +9,11 @@ const DETAILS=[
 {number:5,title:'Zo doe je gewoon',icon:'⚪',summary:'Sommige woorden schrijf je gewoon zoals je de klanken en klankgroepen hoort. Kijk ook naar twee verschillende medeklinkers na een klinker.',tip:'Zieke schilders moeten genoeg rusten omdat…',example:'brieven: brie-ven. Schrijf het woord in de juiste klankgroepen.'},
 {number:6,title:'Verdubbelen, verenkelen of gewoon?',icon:'🎨',summary:'Gebruik de juiste strategie voor iedere klankgroep. Bij samengestelde woorden herken je ook de losse delen.',tip:'Groen voor korte klank; rood voor lange klank; andere klank = gewoon.',example:'pad-den-stoel, groot-moeder en slaap-kamer.'},
 {number:7,title:'Doffe e in -enen, -elen, -eren',icon:'🟣',summary:'Je hoort vaak een doffe, zachte e. Die schrijf je toch als e. Let op woorden met -enen, -elen, -eren en -ere.',tip:'-eren zoals kinderen, -elen zoals meubelen, -enen zoals tekenen.',example:'kin-de-ren, wan-de-len, oe-fe-nen; betere eindigt op -ere.'},
-{number:8,title:'Verkleinwoorden op -je',icon:'🐣',summary:'Zoek het grondwoord en schrijf de juiste verkleinuitgang: -je, -tje, -pje of -jes. Soms verandert de klinker.',tip:'kind + je = kindje. blad → blaadje, gat → gaatje en glas → glaasje.',example:'dorp + je = dorpje; brief + je = briefje.'}
+{number:8,title:'Verkleinwoorden op -je',icon:'🐣',summary:'Zoek het grondwoord en schrijf de juiste verkleinuitgang: -je, -tje, -pje of -jes. Soms verandert de klinker.',tip:'kind + je = kindje. blad → blaadje, gat → gaatje en glas → glaasje.',example:'dorp + je = dorpje; brief + je = briefje.'},
+{number:10,title:'Woorden en zinnen – oefendictee',icon:'📝',
+ summary:'Oefen zes losse woorden en twee volledige zinnen uit het schooldictee. Luister naar een hele zin en schrijf alle woorden in de juiste volgorde.',
+ tip:'Let goed op ei/ij (geheim, weide, vijand), ou/au (flauw, koud, ouders, auto, stout) en de eindletters. Gebruik bij zinnen een hoofdletter en het juiste leesteken.',
+ example:'Gaan je ouders op reis met de auto? • Mijn vijand krijgt nooit gelijk!'}
 ];
 const LINES=[
 [
@@ -187,16 +191,28 @@ const LINES=[
 'de blaadjes|hojitas|kleine bladeren of papiertjes|De blaadjes waaien weg.',
 'het gaatje|agujerito|een klein gat|Er zit een gaatje in mijn sok.',
 'het glaasje|vasito|een klein glas|Ik drink een glaasje water.'
+],
+[
+'geheim|secreto|iets wat je voor anderen verborgen houdt|Ik vertel je een geheim.',
+'flauw|soso; sin gracia|niet grappig of weinig smaakvol|Dat is een flauwe grap.',
+'koud|frío|met een lage temperatuur|Vandaag is het buiten koud.',
+'weide|prado|een grasveld waar dieren grazen|De koeien staan in de weide.',
+'paus|papa; pontífice|het hoofd van de rooms-katholieke kerk|De paus spreekt op het plein.',
+'stout|travieso|ondeugend of niet gehoorzaam|De stoute jongen lacht.',
+'Gaan je ouders op reis met de auto?|¿Tus padres van de viaje en auto?|een vraag of je ouders met de auto op reis gaan|Gaan je ouders op reis met de auto?',
+'Mijn vijand krijgt nooit gelijk!|¡Mi enemigo nunca tiene razón!|een zin waarin je zegt dat je vijand nooit gelijk krijgt|Mijn vijand krijgt nooit gelijk!'
 ]
 ];
 const PRE=/^(de|het|een|ik|we|zij|ze|hij)\s+(.+)$/i;
 const packs=LINES.map((rows,index)=>{
-  if(rows.length!==20)throw Error('Woordpakket '+(index+1)+' heeft '+rows.length+' woorden; verwacht 20');
+  const number=DETAILS[index]?.number,expected=number===10?8:20;
+  if(!number||rows.length!==expected)throw Error('Woordpakket '+number+' heeft '+rows.length+' opdrachten; verwacht '+expected);
   const words=rows.map((row,i)=>{
     const [phrase,es,meaning,example]=row.split('|');
     if([phrase,es,meaning,example].some(x=>!x))throw Error('Ontbrekend veld bij '+phrase);
     const parts=phrase.match(PRE);
-    return Object.freeze({id:'wp'+(index+1)+'-'+(i+1),pack:index+1,phrase,cue:parts?parts[1]:'',word:parts?parts[2]:phrase,es,meaning,example});
+    const isSentence=number===10&&i>=6;
+    return Object.freeze({id:'wp'+number+'-'+(i+1),pack:number,phrase,cue:parts?parts[1]:'',word:parts?parts[2]:phrase,es,meaning,example,isSentence});
   });
   return Object.freeze({...DETAILS[index],words:Object.freeze(words)});
 });
