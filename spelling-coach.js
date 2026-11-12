@@ -37,6 +37,12 @@
   }
   if(pack===7)specific='🟣 Hoor je de zachte, doffe e? Onthoud de uitgang: -enen, -elen, -eren of -ere.';
   if(pack===8)specific='🐣 Zoek eerst het grondwoord en schrijf daarna het verkleinwoord, bijvoorbeeld blad → blaadje of dorp → dorpje.';
+  if(pack===10){
+   const vowels={geheim:'ei',flauw:'auw',koud:'ou',weide:'ei',paus:'au',stout:'ou'};
+   specific=word.isSentence?
+    '📝 Schrijf de volledige zin in de juiste volgorde. Let op vraagteken (?), uitroepteken (!), ei/ij en ou/au.':
+    '👂 Let op het klinkerteken in '+word.word+': '+(vowels[word.word]||'ei/ij of ou/au')+'.';
+  }
   if(pack===1)specific='👂 Luister goed. Sommige eindletters hoor je duidelijker als je het woord langer maakt. Andere spellingen onthoud je.';
   const general=missing?'Je mist '+(missing.length===1?'de letter ':'de letters ')+'“'+missing+'”.':
    extra?'Je hebt '+(extra.length===1?'een extra letter':'extra letters')+' geschreven: “'+extra+'”.':
